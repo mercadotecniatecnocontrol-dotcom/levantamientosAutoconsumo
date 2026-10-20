@@ -1,11 +1,15 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Levantamientos Autoconsumo</title>
-<meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
 /* Layout: una columna de captura para teléfono en campo + pestaña de concentrado con tabla desplazable */
 :root{
+  color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
   --bg:#F2F3EF; --surface:#FFFFFF; --ink:#17201D; --muted:#5B6862; --line:#D6DBD3; --chip:#ECEFE8;
   --brand:#0F5249; --brand-ink:#FFFFFF; --signal:#E2A80A; --signal-soft:#FAEFCB; --signal-ink:#2B2203;
   --ok:#1E7A3D; --ok-soft:#E1F1E6; --warn:#9A5B00; --warn-soft:#FBEBD2; --bad:#B3261E; --bad-soft:#F8E1DF;
@@ -21,10 +25,11 @@
   --bg:#0F1513; --surface:#17201C; --ink:#E6ECE8; --muted:#97A39D; --line:#2A3430; --chip:#212A27;
   --brand:#55B5A6; --brand-ink:#06201B; --signal:#F0C04C; --signal-soft:#372E12; --signal-ink:#F7E3A8;
   --ok:#62C98A; --ok-soft:#163323; --warn:#EAA84A; --warn-soft:#3A2A10; --bad:#F2877E; --bad-soft:#3D1A17; color-scheme:dark }
-
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.45}
+img{max-width:100%}
+body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.45}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--brand)}
 button,input,select,textarea{font:inherit;color:inherit}
 .wrap{max-width:920px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
@@ -99,10 +104,17 @@ button:focus-visible,.chip:focus-visible,label.addph:focus-within{outline:2px so
 .ph img{width:100%;height:100%;object-fit:cover;display:block}
 .ph button{position:absolute;top:3px;right:3px;width:24px;height:24px;border-radius:50%;border:0;background:rgba(0,0,0,.65);color:#fff;font-size:14px;line-height:1;cursor:pointer}
 .ph.busy{display:grid;place-items:center;font-size:11px;color:var(--muted);font-family:var(--f-mono)}
-label.addph{width:84px;height:84px;border:1.5px dashed var(--muted);border-radius:8px;display:grid;place-items:center;text-align:center;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;line-height:1.2;padding:4px}
+label.addph{position:relative;width:84px;height:84px;border:1.5px dashed var(--muted);border-radius:8px;display:grid;place-items:center;text-align:center;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;line-height:1.2;padding:4px}
 label.addph svg{display:block;margin:0 auto 3px}
 label.addph input{position:absolute;opacity:0;width:1px;height:1px}
 .phnote{font-size:12px;color:var(--muted)}
+.arca-wrap{position:relative}
+.arca-res{display:flex;flex-direction:column;max-height:280px;overflow-y:auto;border:1px solid var(--line);border-radius:8px;background:var(--surface);margin-top:4px}
+.arca-res button{display:flex;justify-content:space-between;align-items:baseline;gap:10px;text-align:left;border:0;border-bottom:1px solid var(--line);background:transparent;padding:11px 12px;cursor:pointer;font-size:15px}
+.arca-res button:last-child{border-bottom:0}
+.arca-res button:hover,.arca-res button:focus-visible{background:color-mix(in srgb,var(--signal) 14%,transparent)}
+.arca-res button span{color:var(--muted);font-size:13px;white-space:nowrap}
+.arca-res p{margin:0;padding:10px 12px;font-size:14px;color:var(--muted)}
 
 .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
 .summary div{background:var(--surface);padding:10px 12px}
@@ -148,6 +160,8 @@ tfoot td{font-weight:600;background:var(--bg);border-bottom:0}
 @media (max-width:520px){ .brand b{font-size:19px} .tabs{width:100%} .tabs button{flex:1} }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
+</head>
+<body>
 
 <header class="top">
   <div class="wrap">
@@ -170,11 +184,19 @@ tfoot td{font-weight:600;background:var(--bg);border-bottom:0}
 <div id="toast" class="toast" hidden></div>
 <div id="overlay" class="overlay" hidden><div><span id="ovt">Generando PDF…</span><small id="ovs"></small></div></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
 <script>
 (function(){
 "use strict";
+/* ---------- Conexión a Supabase ---------- */
+// Pega aquí la "anon public key" (Supabase > Project Settings > API). Es la misma que usa surtidos-supabase.js.
+const SUPABASE_URL = 'https://vlbyjoqessxcmkejcujp.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZsYnlqb3Flc3N4Y21rZWpjdWpwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYxMjMzODcsImV4cCI6MjEwMTY5OTM4N30.T8rODqxRoj5HhDmvvDy9LtBBJS-fQZJRFLV3Mn10b_4';
+const TABLA = 'levantamientos';
+const BUCKET = 'levantamientos';
+
 /* ---------- Catálogos ---------- */
 const INST = [
   ['cuartoElectrico','Cuarto eléctrico',true],
@@ -199,13 +221,17 @@ const SEG = [
   ['volumetrico','Sistema de control volumétrico'],
   ['senalizacion','Señalización y ruta de evacuación'],
 ];
-const PROD = [['regular','Regular'],['premium','Premium'],['diesel','Diésel']];
-const PRODT = [['regular','Regular'],['premium','Premium'],['diesel','Diésel'],['otro','Otro']];
+const PROD = [['regular','Regular'],['premium','Premium'],['diesel','Diésel'],['gaslp','Gas LP'],['gasnat','Gas natural']];
+const PRODT = [['regular','Regular'],['premium','Premium'],['diesel','Diésel'],['gaslp','Gas LP'],['gasnat','Gas natural'],['otro','Otro']];
 const LBL = Object.fromEntries([...PRODT,['master','Master'],['satelite','Satélite'],['na','No aplica'],['subterraneo','Subterráneo'],['superficial','Superficial'],['doble','Doble pared'],['sencilla','Pared sencilla'],['si','Sí'],['no','No']]);
 
-/* ---------- Estado ---------- */
-const S = { db:null, assets:null, downloads:null, user:null, uid:null, canWrite:null, isAdmin:false,
-  docs:new Map(), names:{}, rec:null, tab:'captura', saving:false, again:false, timer:null, uploads:{}, dbReady:false, lastSaved:null, saveErr:null, readOnly:false, showCheck:false };
+/* ---------- Directorio de estaciones ARCA ---------- */
+// [ID CG, sitio, región, estado, permiso, dirección, combustibles]  (fuente: DIRECTORIO_ESTACIONES_ARCA.xlsx)
+const ARCA = [["0001", "P. Matamoros", "Noreste", "Tamaulipas", "LP/18532/EXP/AUT/2016", "Prolongación Calixto Ayala No. 200, Col San Rafael", ["gasolina", "gaslp", "diesel", "gasnat"]], ["0002", "P. Piedras Negras", "Noreste", "Coahuila", "LP/18577/EXP/AUT/2016", "Carretera 57, Km13, Tramo Piedras Negras-Nava", ["gaslp", "gasnat"]], ["0003", "P. CD Juárez (Médanos)", "Norte", "Chihuahua", "LP/18541/EXP/AUT/2016", "Blvd. Oscar Flores Sánchez No. 9755 Col. Puente Alto", ["gaslp", "gasnat"]], ["0004", "P. Chihuahua", "Norte", "Chihuahua", "LP/18493/EXP/AUT/2016", "Av. Cristóbal Colon No. 18701 Col. Las Carolinas", ["gaslp", "gasnat"]], ["0005", "P. Guadiana (Dgo)", "Norte", "Durango", "LP/18575/EXP/AUT/2016", "Carretera Durango - Mezquital Km 3.0", ["gasolina", "gaslp", "diesel", "gasnat"]], ["0006", "Juárez SLP", "Occidente", "San Luis Potosí", "LP/19057/EXP/AUT/2016", "Fidel Velázquez, Lado Oriente. S/N, Benito Juárez", ["gasolina", "gaslp", "diesel"]], ["0007", "Los Altos", "Occidente", "Jalisco", "LP/18539/EXP/AUT/2016", "Blvd. Anacleto Glez Flores Sur 2145, Las Aguilillas", ["gaslp"]], ["0008", "P. Las Fuentes (Gdj)", "Occidente", "Jalisco", "LP/18514/EXP/AUT/2016", "Av. Adolfo López Mateos Sur 6285, El Mante", ["gasolina", "gaslp", "diesel", "gasnat"]], ["0009", "P. San Luis", "Occidente", "San Luis Potosí", "LP/18523/EXP/AUT/2016", "Periférico, Manuel Gomez Morin #3005 Fracc. Del Saucito", ["gasolina", "gaslp", "diesel", "gasnat"]], ["0010", "P. Zapopan (Gdj)", "Occidente", "Jalisco", "LP/18361/EXP/AUT/2016", "Av. Base Aérea Km 2 2000, San Juan de Ocotán", ["gasolina", "gaslp", "diesel", "gasnat"]], ["0011", "Cabo San Lucas", "Pacífico", "Baja California Sur", "", "Carretera, Cabo San Lucas - Todos los Santos Km 7.5, Los Cangrejos", ["gaslp"]], ["0012", "Mazatlán", "Pacífico", "Sinaloa", "", "Mazatlán-Culiacán S/N, El Venadillo", ["gaslp"]], ["0013", "P. Culiacán", "Pacífico", "Sinaloa", "", "Calz. Aeropuerto 5501, Gasolinera del Valle", ["gaslp", "gasnat"]], ["0014", "P. Hermosillo", "Pacífico", "Sonora", "LP/18518/EXP/AUT/201", "Blvd. Luis Encinas J. 632, El Torreón", ["gaslp", "gasnat"]], ["0015", "P. La Paz", "Pacífico", "Baja California Sur", "", "Luis Donaldo Colosio 143, Jardines del Sur", ["gaslp", "gasnat"]], ["0016", "P. Mexicali", "Pacífico", "Baja California", "LP/18524/EXP/AUT/2016", "Blvd Lázaro Cárdenas 2400, Plutarco Elías Calles", ["gaslp", "gasnat"]], ["0017", "Fundadores", "Noreste", "Coahuila", "", "Blvd. Fundadores No. 2690", ["gaslp", "diesel"]], ["0018", "Lincoln", "Noreste", "Nuevo León", "", "Ave. Lincoln No. 7000 Pte Col. Plutarco Elias Calles", ["gasolina", "diesel"]], ["0019", "Monclova", "Noreste", "Coahuila", "", "Libramiento Carlos Salinas de Gortari S/N, Col. Estancias de San Juan Bautista", ["gaslp", "diesel"]], ["0020", "Monterrey", "Noreste", "Nuevo León", "", "Av. Alfonso Reyes No. 3001 Nte, Col. Regina", ["gasolina", "diesel"]], ["0021", "P. Ciel Saltillo", "Noreste", "Coahuila", "", "Fundadores 6659 - San Jose de los Cerritos", ["gaslp", "diesel"]], ["0022", "P. Guadalupe", "Noreste", "Nuevo León", "", "Ave. Lázaro Cardenas No. 1213 Fracc. El Sabino", ["gasolina", "gaslp", "diesel", "gasnat"]], ["0023", "P. Insurgentes", "Noreste", "Nuevo León", "", "Ave. Insurgentes No. 1618 Pte Col. Colinas de San Jerónimo", ["gasolina", "diesel", "gasnat"]], ["0024", "Suc. Estadio", "Norte", "Coahuila", "", "Calzada Moctezuma #703 Col. Carolinas", ["gasolina", "gaslp", "diesel"]], ["0025", "Suc. Santa Rita", "Norte", "Durango", "", "Boulevard Mexico 222 Col. Ex-ejido Cuba", ["gasolina", "gaslp", "diesel"]], ["0026", "San Agustín (Torreón)", "Norte", "", "", "C. Alberto N. Swain 347, Cd Industrial", ["gasnat"]], ["0027", "Zacatecas", "Norte", "Zacatecas", "", "Carretera 54 vía corta Zacatecas-Guadalajara Km. 306.2 Colonia Cieneguillas", ["gasolina", "gaslp", "diesel"]], ["0028", "Belenes", "Occidente", "Jalisco", "", "Blvd a Bosques de San Isidro 580 Zapopan Jalisco", ["gasolina", "gaslp", "diesel"]], ["0029", "P. Aguascalientes", "Occidente", "Aguascalientes", "", "Camino a San Bartolo #100 Ejido Coyotes", ["gasolina", "gaslp", "diesel", "gasnat"]], ["0030", "P. Las Trojes (Ags)", "Occidente", "Aguascalientes", "", "Primera Priv. Niños Héroes, Trojes de Alonso", ["gasolina", "gaslp", "diesel", "gasnat"]], ["0031", "Suc. Toluquilla", "Occidente", "Jalisco", "", "Anillo Perif. Sur Manuel Gómez Morín 6740, Tlaquepaque", ["gasolina", "diesel"]]];
+const COMB = {gasolina:'Gasolina',gaslp:'Gas LP',diesel:'Diésel',gasnat:'Gas natural'};
+const arcaLabel = a => a[1]+' — '+(a[3]||'sin estado')+' (ID '+a[0]+')';
+const ARCA_ORD = ARCA.slice().sort((a,b)=>a[1].localeCompare(b[1],'es'));
+function arcaRazon(c){ const r=[]; if(c.includes('gasolina')||c.includes('diesel')) r.push('Distribuidora Arca Comercial'); if(c.includes('gaslp')||c.includes('gasnat')) r.push('Bebidas Mundiales'); return r.join(' / '); }
 
 /* ---------- Utilidades ---------- */
 const $ = (s,r=document)=>r.querySelector(s);
@@ -219,18 +245,29 @@ function lsGet(k){ try{ return JSON.parse(localStorage.getItem(k)); }catch(e){ r
 function lsSet(k,v){ try{ v==null?localStorage.removeItem(k):localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
 function toast(msg,ms=2800){ const t=$('#toast'); t.textContent=msg; t.hidden=false; clearTimeout(toast._t); toast._t=setTimeout(()=>t.hidden=true,ms); }
 function overlay(on,t,s){ $('#overlay').hidden=!on; if(t) $('#ovt').textContent=t; $('#ovs').textContent=s||''; }
+function deviceId(){ let id=lsGet('lt.device'); if(!id){ id='dev-'+Date.now().toString(36)+'-'+rid(); lsSet('lt.device',id); } return id; }
+
+/* ---------- Estado ---------- */
+const S = { sb:null, configured:false, uid:deviceId(), canWrite:true,
+  docs:new Map(), rec:null, tab:'captura', saving:false, again:false, timer:null, uploads:{}, dbReady:false, dbError:false, lastSaved:null, saveErr:null, readOnly:false, showCheck:false, started:false };
+
 function mkFolio(){ const d=today().replace(/-/g,'').slice(2); return 'LT-'+d+'-'+Math.random().toString(36).slice(2,6).toUpperCase(); }
-function blank(){ return { folio:mkFolio(), estatus:'borrador', creadoPor:S.uid||null, creadoEn:new Date().toISOString(),
+function blank(){ return { folio:mkFolio(), estatus:'borrador', creadoPor:S.uid, creadoEn:new Date().toISOString(),
   general:{fecha:today()}, predio:{}, instalaciones:{}, seguridad:{}, tanques:{lista:[]}, despacho:{dispensarios:[]}, observaciones:'', fotosGenerales:[] }; }
 function armed(btn){ if(btn.dataset.armed) return true; btn.dataset.armed='1'; const t=btn.innerHTML; btn.textContent='¿Seguro? Toca otra vez'; setTimeout(()=>{ delete btn.dataset.armed; btn.innerHTML=t; },3000); return false; }
+function photoUrl(id){
+  if(!id) return '';
+  if(/^https?:\/\//.test(id)) return id;
+  return SUPABASE_URL+'/storage/v1/object/public/'+BUCKET+'/'+String(id).split('/').map(encodeURIComponent).join('/');
+}
 
 /* ---------- Totales ---------- */
 function totals(r){
   const tq=(r.tanques&&r.tanques.lista)||[], ds=(r.despacho&&r.despacho.dispensarios)||[];
-  const t={ tanques:tq.length, capacidad:0, porProd:{}, disp:ds.length, master:0, satelite:0, mangGas:0, mangDie:0, fotos:collectPhotos(r).length };
+  const t={ tanques:tq.length, capacidad:0, porProd:{}, disp:ds.length, master:0, satelite:0, mangGas:0, mangDie:0, mangOtro:0, fotos:collectPhotos(r).length };
   tq.forEach(x=>{ const c=Number(x.capacidad)||0; t.capacidad+=c; if(x.producto) t.porProd[x.producto]=(t.porProd[x.producto]||0)+c; });
-  ds.forEach(x=>{ if(x.tipoDiesel==='master') t.master++; if(x.tipoDiesel==='satelite') t.satelite++; t.mangGas+=Number(x.mangGas)||0; t.mangDie+=Number(x.mangDie)||0; });
-  t.mangueras=t.mangGas+t.mangDie; return t;
+  ds.forEach(x=>{ if(x.tipoDiesel==='master') t.master++; if(x.tipoDiesel==='satelite') t.satelite++; t.mangGas+=Number(x.mangGas)||0; t.mangDie+=Number(x.mangDie)||0; t.mangOtro+=Number(x.mangOtro)||0; });
+  t.mangueras=t.mangGas+t.mangDie+t.mangOtro; return t;
 }
 function collectPhotos(r){
   const out=[]; const add=(arr,cap)=>(arr||[]).forEach(id=>out.push({id,cap}));
@@ -251,7 +288,7 @@ function validate(r){
   [['nombre','Nombre de la estación'],['municipio','Municipio'],['estado','Estado'],['fecha','Fecha'],['cuadrilla','Cuadrilla'],['responsable','Responsable del levantamiento']].forEach(([k,l])=>{ if(!String(g[k]||'').trim()) req.push(l); });
   if(!String(g.coordenadas||'').trim()) adv.push('Coordenadas GPS');
   if(!(r.fotosGenerales||[]).length) adv.push('Foto de vista general / fachada');
-  INST.forEach(([k,l,main])=>{ const x=getP(r,'instalaciones.'+k)||{}; if(main&&!x.existe) req.push(l+': indicar si cuenta'); if(x.existe==='si'&&!(x.fotos||[]).length) (main?adv:adv).push(l+': falta foto de evidencia'); });
+  INST.forEach(([k,l,main])=>{ const x=getP(r,'instalaciones.'+k)||{}; if(main&&!x.existe) req.push(l+': indicar si cuenta'); if(x.existe==='si'&&!(x.fotos||[]).length) adv.push(l+': falta foto de evidencia'); });
   const tq=(r.tanques&&r.tanques.lista)||[];
   if(!tq.length) req.push('Registrar al menos un tanque');
   tq.forEach((x,i)=>{ if(!x.producto) req.push('Tanque '+(i+1)+': producto'); if(!(Number(x.capacidad)>0)) req.push('Tanque '+(i+1)+': capacidad'); if(!(x.fotos||[]).length) adv.push('Tanque '+(i+1)+': falta foto'); });
@@ -264,6 +301,7 @@ function validate(r){
     if(p.includes('diesel')&&!['master','satelite'].includes(x.tipoDiesel)) req.push(n+': indicar si el diésel es Master o Satélite');
     if((p.includes('regular')||p.includes('premium'))&&!(Number(x.mangGas)>0)) req.push(n+': mangueras de gasolina');
     if(p.includes('diesel')&&!(Number(x.mangDie)>0)) req.push(n+': mangueras de diésel');
+    if((p.includes('gaslp')||p.includes('gasnat'))&&!(Number(x.mangOtro)>0)) req.push(n+': mangueras de gas LP / natural');
     if(!(x.fotos||[]).length) adv.push(n+': falta foto'); });
   return {req,adv};
 }
@@ -281,12 +319,41 @@ function chipField(label,p,opts,req,cls){ return `<div class="f"><span>${label}$
 const CAM = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>';
 function photos(p){
   const ids=getP(S.rec,p)||[]; const busy=S.uploads[p]||0;
-  const thumbs=ids.map((id,i)=>`<div class="ph"><img src="/_blob/${esc(id)}" alt="Foto ${i+1}" loading="lazy">${S.readOnly?'':`<button type="button" aria-label="Quitar foto" data-delph="${p}" data-i="${i}">×</button>`}</div>`).join('');
+  const thumbs=ids.map((id,i)=>`<div class="ph"><img src="${esc(photoUrl(id))}" alt="Foto ${i+1}" loading="lazy">${S.readOnly?'':`<button type="button" aria-label="Quitar foto" data-delph="${p}" data-i="${i}">×</button>`}</div>`).join('');
   const sp=Array.from({length:busy},()=>`<div class="ph busy">subiendo…</div>`).join('');
   let add='';
-  if(!S.readOnly){ add = S.assets ? `<label class="addph">${CAM}Agregar foto<input type="file" accept="image/*" multiple data-up="${p}"></label>`
-    : `<span class="phnote">${S.dbReady?'Tu acceso no permite subir fotos. Pide acceso de Colaborador.':'Las fotos se habilitan al conectar.'}</span>`; }
+  if(!S.readOnly){
+    if(S.sb) add=`<label class="addph">${CAM}Agregar foto<input type="file" accept="image/*" multiple data-up="${p}"></label>`;
+    else add=`<span class="phnote">${S.configured?'Sin conexión: las fotos se suben cuando haya internet.':'Falta configurar la conexión a Supabase.'}</span>`;
+  }
   return `<div class="photos" data-phw="${p}">${thumbs}${sp}${add}</div>`;
+}
+function arcaPicker(){
+  const g=S.rec.general||{}; const sel=ARCA.find(a=>a[0]===g.arcaId);
+  return `<div class="inst"><div class="f arca-wrap"><span>Estación ARCA (llena los datos sola)</span>
+    <input id="arcaPick" type="text" autocomplete="off" placeholder="Toca aquí y elige la estación, o escribe para buscar…" value="${sel?esc(arcaLabel(sel)):''}"${S.readOnly?' disabled':''}>
+    <div id="arcaRes" class="arca-res" hidden></div>
+    <small class="hint">Elige la estación de la lista. Se llenan solos el nombre, la razón social, el permiso, el estado y el domicilio. Después puedes corregir lo que haga falta.</small></div>
+    ${sel?`<p class="hint">ID ${esc(sel[0])} · Región ${esc(sel[2])} · Combustibles: ${esc(sel[6].map(k=>COMB[k]).join(', ')||'—')}</p>`:''}</div>`;
+}
+const norm = x => String(x||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+function showArca(q){
+  const box=$('#arcaRes'); if(!box) return;
+  const n=norm(q).trim();
+  const m=ARCA_ORD.filter(a=>!n||norm(a[0]+' '+a[1]+' '+a[2]+' '+a[3]+' '+arcaLabel(a)).includes(n));
+  box.innerHTML=m.length?m.map(a=>`<button type="button" data-arca="${esc(a[0])}"><b>${esc(a[1])}</b><span>${esc((a[3]||'sin estado')+' · ID '+a[0])}</span></button>`).join('')
+    :'<p>No hay estaciones con ese nombre. Revisa cómo lo escribiste.</p>';
+  box.hidden=false;
+}
+function hideArca(){ const box=$('#arcaRes'); if(box) box.hidden=true; }
+function applyArca(id){
+  hideArca();
+  if(!S.rec||S.readOnly) return;
+  const a=ARCA.find(x=>x[0]===id); if(!a) return;
+  const g=S.rec.general||(S.rec.general={});
+  if(g.arcaId===a[0]&&g.nombre==='ARCA '+a[1]) return;
+  Object.assign(g,{ arcaId:a[0], region:a[2], nombre:'ARCA '+a[1], razonSocial:arcaRazon(a[6]), permiso:a[4], estado:a[3], direccion:a[5], combustibles:a[6].slice() });
+  touched(); renderCaptura(); toast('Datos de '+a[1]+' cargados. Falta el municipio.');
 }
 function sec(n,title,id,status,body,open){ return `<details class="sec" id="s-${id}"${open?' open':''}><summary><span class="n">${n}</span><h2>${title}</h2>${status?`<span class="st${status.ok?' ok':''}">${status.t}</span>`:''}</summary><div class="body">${body}</div></details>`; }
 
@@ -309,6 +376,7 @@ function renderCaptura(){
   if(S.readOnly) h+=`<div class="banner">Estás viendo este levantamiento en modo lectura.</div>`;
 
   h+=sec('01','Datos generales','gen',{t:g.nombre?'Con datos':'Pendiente',ok:!!g.nombre},`
+    ${arcaPicker()}
     <div class="grid">
       ${field('Nombre de la estación / empresa','general.nombre',{req:1,full:1,ph:'Ej. Autoconsumo Transportes del Bajío'})}
       ${field('Razón social','general.razonSocial')}
@@ -337,10 +405,10 @@ function renderCaptura(){
     <div class="f"><span>Croquis, plano o vistas del predio</span>${photos('predio.fotos')}</div>`,isOpen('pre',false));
 
   h+=sec('03','Instalaciones','ins',{t:instDone?'Completo':'Pendiente',ok:instDone},`
-    <p class="hint">Indica si la estación cuenta con cada espacio. Si cuenta con él, toma foto.</p>
+    <p class="hint">Indica si la estación cuenta con cada espacio. Si dices que sí, toma la foto de evidencia.</p>
     ${INST.map(([k,l,main])=>{ const p='instalaciones.'+k; const ex=getP(r,p+'.existe');
       return `<div class="inst"><div class="inst-h"><b>${l}${main?'':'<small>adicional</small>'}</b>${chips(p+'.existe',[['si','Sí'],['no','No']],1)}</div>
-      ${ex==='si'?`<div class="grid">${field('Medidas / ubicación / observaciones',p+'.notas',{full:1,ph:'Ej. 3 × 4 m, junto a oficina'})}</div>${photos(p+'.fotos')}`:''}</div>`; }).join('')}`,isOpen('ins',true));
+      ${ex==='si'?photos(p+'.fotos'):''}</div>`; }).join('')}`,isOpen('ins',true));
 
   const tq=getP(r,'tanques.lista')||[];
   h+=sec('04','Tanques de almacenamiento','tan',{t:tq.length?tq.length+' tanque'+(tq.length>1?'s':'')+' · '+fmt(t.capacidad)+' L':'Pendiente',ok:tq.length>0},`
@@ -362,13 +430,14 @@ function renderCaptura(){
   h+=sec('05','Zona de despacho','des',{t:ds.length?ds.length+' disp. · '+t.mangueras+' mangueras':'Pendiente',ok:ds.length>0},`
     <div class="grid">${field('No. de islas','despacho.islas',{type:'number'})}${field('Observaciones de la zona','despacho.notas',{ph:'Techumbre, guarniciones, piso…'})}</div>
     <div class="f"><span>Fotos de la zona de despacho</span>${photos('despacho.fotos')}</div>
-    ${ds.map((x,i)=>{ const p='despacho.dispensarios.'+i; const pr=x.productos||[]; const gas=pr.includes('regular')||pr.includes('premium'); const die=pr.includes('diesel');
+    ${ds.map((x,i)=>{ const p='despacho.dispensarios.'+i; const pr=x.productos||[]; const gas=pr.includes('regular')||pr.includes('premium'); const die=pr.includes('diesel'); const glp=pr.includes('gaslp')||pr.includes('gasnat');
       return `<div class="item"><div class="item-h"><b>Dispensario ${esc(x.numero||i+1)}</b>${S.readOnly?'':`<button type="button" class="btn sm ghost danger" data-del="despacho.dispensarios" data-i="${i}">Quitar</button>`}</div>
       <div class="grid">${field('No. / ID del dispensario',p+'.numero',{ph:String(i+1)})}${field('Isla',p+'.isla')}${field('Marca',p+'.marca',{ph:'Wayne, Gilbarco, Bennett…'})}${field('Modelo',p+'.modelo')}</div>
       <div class="f"><span>Productos que despacha <i>*</i></span>${multi(p+'.productos',PROD)}</div>
       <div class="grid">
         ${gas?field('Mangueras de gasolina',p+'.mangGas',{type:'number',req:1,help:'Total en el dispensario (ambos lados)'}):''}
         ${die?field('Mangueras de diésel',p+'.mangDie',{type:'number',req:1}):''}
+        ${glp?field('Mangueras de gas LP / natural',p+'.mangOtro',{type:'number',req:1}):''}
         ${chipField('Lados de despacho',p+'.lados',[['1','1 lado'],['2','2 lados']])}
       </div>
       ${die?chipField('Diésel: tipo de dispensario',p+'.tipoDiesel',[['master','Master'],['satelite','Satélite']],1):''}
@@ -404,7 +473,7 @@ function startHTML(){
   return `<div class="start">
     <h1>Nuevo levantamiento</h1>
     <p>Captura los datos de la estación de autoconsumo con fotos de evidencia. Se guarda solo mientras escribes. Al terminar, descarga el PDF y compártelo.</p>
-    <div class="actions">${S.canWrite===false?'<span class="hint">Tu acceso es de solo lectura. Pide acceso de Colaborador para capturar.</span>':`<button type="button" class="btn pri" data-act="new">+ Iniciar levantamiento</button>`}</div>
+    <div class="actions"><button type="button" class="btn pri" data-act="new">+ Iniciar levantamiento</button></div>
     ${local&&!S.docs.has(local.folio)?`<div class="mini"><p class="hint">Borrador en este dispositivo:</p><button type="button" data-act="local"><b>${esc(getP(local,'general.nombre')||'Sin nombre')}</b><span>${esc(local.folio)}</span></button></div>`:''}
     ${mine.length?`<div class="mini"><p class="hint">Tus levantamientos recientes:</p>${mine.map(d=>`<button type="button" data-open="${esc(d.folio)}"><b>${esc(getP(d,'general.nombre')||'Sin nombre')}</b><span>${d.estatus==='completo'?'Completo':'Borrador'} · ${esc(d.folio)}</span></button>`).join('')}</div>`:''}
   </div>`;
@@ -417,14 +486,14 @@ function rowsFiltered(){
   return [...S.docs.values()].filter(d=>{ const g=d.general||{};
     if(F.cuadrilla&&g.cuadrilla!==F.cuadrilla) return false;
     if(F.estatus&&d.estatus!==F.estatus) return false;
-    if(q&&![d.folio,g.nombre,g.municipio,g.estado,g.responsable,g.cuadrilla,g.razonSocial].join(' ').toLowerCase().includes(q)) return false;
+    if(q&&![d.folio,g.nombre,g.municipio,g.estado,g.responsable,g.cuadrilla,g.razonSocial,g.arcaId,g.region].join(' ').toLowerCase().includes(q)) return false;
     return true; }).sort((a,b)=>String(b.general&&b.general.fecha||'').localeCompare(String(a.general&&a.general.fecha||'')));
 }
 function yn(v){ return v==='si'?'<span class="yn s">Sí</span>':v==='no'?'<span class="yn n">No</span>':'<span class="yn n">—</span>'; }
 function renderConcentrado(){
   const el=$('#view-concentrado');
   const all=[...S.docs.values()]; const rows=rowsFiltered();
-  const cuad=[...new Set(all.map(d=>getP(d,'general.cuadrilla')).filter(Boolean))].sort();
+  const cuad=[...new Set(all.map(d=>getP(d,'general.cuadrilla')).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'es'));
   const T=rows.reduce((a,d)=>{ const t=totals(d); a.tq+=t.tanques; a.cap+=t.capacidad; a.ds+=t.disp; a.m+=t.mangueras; a.ma+=t.master; a.sa+=t.satelite; a.f+=t.fotos; a.ok+=d.estatus==='completo'?1:0; return a; },{tq:0,cap:0,ds:0,m:0,ma:0,sa:0,f:0,ok:0});
   const focus=document.activeElement&&document.activeElement.id; const selS=focus==='fq'?[document.activeElement.selectionStart]:null;
   el.innerHTML=`
@@ -446,12 +515,12 @@ function renderConcentrado(){
     <th>Folio</th><th>Estación</th><th>Ubicación</th><th>Fecha</th><th>Cuadrilla / responsable</th><th>Estatus</th>
     <th>C. eléc.</th><th>Oficina</th><th>Res. pel.</th><th class="num">Tanques</th><th class="num">Capacidad L</th><th>Consola</th>
     <th class="num">Disp.</th><th class="num">Master / Sat.</th><th class="num">Mang.</th><th class="num">Fotos</th><th></th></tr></thead><tbody>
-    ${rows.map(d=>{ const g=d.general||{}, t=totals(d), ins=d.instalaciones||{}; const who=S.names[d.creadoPor];
-      const canDel=S.isAdmin||(S.uid&&d.creadoPor===S.uid);
+    ${rows.map(d=>{ const g=d.general||{}, t=totals(d), ins=d.instalaciones||{};
+      const canDel=S.sb&&d.creadoPor===S.uid;
       return `<tr data-open="${esc(d.folio)}">
       <td class="mono">${esc(d.folio)}</td><td><b>${esc(g.nombre||'Sin nombre')}</b>${g.permiso?`<br><small class="hint">${esc(g.permiso)}</small>`:''}</td>
       <td>${esc([g.municipio,g.estado].filter(Boolean).join(', '))}</td><td class="mono">${esc(g.fecha||'')}</td>
-      <td>${esc(g.cuadrilla||'—')}<br><small class="hint">${esc(g.responsable||'')}${who?` · capturó ${esc(who)}`:''}</small></td>
+      <td>${esc(g.cuadrilla||'—')}<br><small class="hint">${esc(g.responsable||'')}</small></td>
       <td><span class="pill ${d.estatus==='completo'?'ok':'draft'}">${d.estatus==='completo'?'Completo':'Borrador'}</span></td>
       <td>${yn(getP(ins,'cuartoElectrico.existe'))}</td><td>${yn(getP(ins,'oficina.existe'))}</td><td>${yn(getP(ins,'residuos.existe'))}</td>
       <td class="num">${t.tanques}</td><td class="num">${fmt(t.capacidad)}</td><td>${yn(getP(d,'tanques.consola'))}</td>
@@ -465,7 +534,8 @@ function renderConcentrado(){
 /* ---------- Encabezado / estado ---------- */
 function renderStatus(){
   const c=$('#conn');
-  if(!S.dbReady) c.innerHTML='<span class="dot warn"></span>Sin conexión al concentrado · se guarda en este dispositivo';
+  if(!S.configured) c.innerHTML='<span class="dot bad"></span>Falta configurar Supabase · se guarda en este dispositivo';
+  else if(!S.dbReady) c.innerHTML='<span class="dot warn"></span>Sin conexión al concentrado · se guarda en este dispositivo';
   else c.innerHTML='<span class="dot ok"></span>Conectado · '+S.docs.size+' levantamiento'+(S.docs.size===1?'':'s');
   const s=$('#savest');
   if(!S.rec) s.textContent='';
@@ -481,27 +551,34 @@ function setTab(t){
   window.scrollTo(0,0);
 }
 
-/* ---------- Guardado ---------- */
+/* ---------- Guardado (Supabase) ---------- */
 function touched(){ if(!S.rec||S.readOnly) return; S.rec.actualizadoEn=new Date().toISOString(); lsSet('lt.draft',S.rec); clearTimeout(S.timer); S.timer=setTimeout(()=>{ S.timer=null; save(); },1500); renderStatus(); }
 async function save(){
-  if(!S.db||!S.rec||S.readOnly){ renderStatus(); return; }
+  if(!S.sb||!S.rec||S.readOnly){ renderStatus(); return; }
   if(S.saving){ S.again=true; return; }
   S.saving=true; renderStatus();
-  const snap=JSON.parse(JSON.stringify(S.rec)); if(!snap.creadoPor&&S.uid){ snap.creadoPor=S.uid; S.rec.creadoPor=S.uid; }
-  snap.actualizadoPor=S.uid||null;
-  try{ await S.db.doc('levantamientos/'+snap.folio).set(snap); S.lastSaved=new Date(); S.saveErr=null; }
-  catch(e){ S.saveErr = e&&e.code==='invalid_argument'?'Sin permiso para guardar en el concentrado':'No se pudo guardar; se reintentará'; if(!(e&&e.code==='invalid_argument')) setTimeout(()=>touched(),8000); }
+  const snap=JSON.parse(JSON.stringify(S.rec)); if(!snap.creadoPor){ snap.creadoPor=S.uid; S.rec.creadoPor=S.uid; }
+  snap.actualizadoPor=S.uid;
+  try{
+    const {error}=await S.sb.from(TABLA).upsert({ folio:snap.folio, data:snap, estatus:snap.estatus, creado_por:snap.creadoPor, actualizado_en:snap.actualizadoEn||new Date().toISOString() });
+    if(error) throw error;
+    S.docs.set(snap.folio,snap); S.lastSaved=new Date(); S.saveErr=null;
+  }catch(e){
+    const perm=e&&(e.code==='42501'||/row-level security|permission/i.test(e.message||''));
+    S.saveErr=perm?'Sin permiso para guardar en el concentrado':'No se pudo guardar; se reintentará';
+    if(!perm) setTimeout(()=>touched(),8000);
+  }
   S.saving=false; if(S.again){ S.again=false; save(); } renderStatus();
 }
 function openRec(folio){
   const d=S.docs.get(folio); if(!d) return;
   S.rec=JSON.parse(JSON.stringify(d)); S.showCheck=false;
-  S.readOnly = S.canWrite===false || !S.db;
+  S.readOnly = !S.sb;
   if(!S.readOnly) lsSet('lt.draft',S.rec);
   S.lastSaved=null; S.saveErr=null; setTab('captura');
 }
 
-/* ---------- Fotos ---------- */
+/* ---------- Fotos (Supabase Storage) ---------- */
 async function compress(file){
   const url=URL.createObjectURL(file);
   try{
@@ -514,16 +591,26 @@ async function compress(file){
 }
 function refreshPhotos(p){ const w=document.querySelector(`[data-phw="${CSS.escape(p)}"]`); if(w) w.outerHTML=photos(p); }
 async function uploadFiles(p,files){
-  if(!S.assets) return;
+  if(!S.sb||!S.rec) return;
+  const folio=S.rec.folio;
   for(const f of files){
     S.uploads[p]=(S.uploads[p]||0)+1; refreshPhotos(p);
     try{
       let blob=await compress(f).catch(()=>null);
       if(!blob){ if(/^image\/(jpeg|png|webp|gif)$/.test(f.type)) blob=f; else throw {code:'unsupported_type'}; }
-      const res=await S.assets.upload(blob,{type:blob.type||'image/jpeg'});
-      const arr=getP(S.rec,p)||[]; arr.push(res.id); setP(S.rec,p,arr); touched();
+      const ext=blob.type==='image/png'?'png':blob.type==='image/webp'?'webp':blob.type==='image/gif'?'gif':'jpg';
+      const path=folio+'/'+Date.now()+'-'+rid()+'.'+ext;
+      const {error}=await S.sb.storage.from(BUCKET).upload(path,blob,{contentType:blob.type||'image/jpeg',upsert:false,cacheControl:'31536000'});
+      if(error) throw error;
+      if(!S.rec||S.rec.folio!==folio) continue;
+      const arr=getP(S.rec,p)||[]; arr.push(path); setP(S.rec,p,arr); touched();
     }catch(e){
-      const c=e&&e.code; toast(c==='unsupported_type'?'Formato de imagen no compatible. Usa JPG o PNG.':c==='too_large'?'La foto es demasiado pesada.':c==='quota_or_state'?'Se llenó el espacio de fotos. Avísale a la administradora.':c==='rate_limited'?'Muchas fotos seguidas; espera unos segundos.':'No se pudo subir la foto. Revisa tu conexión.',4000);
+      const c=e&&e.code, m=String(e&&(e.message||e.error)||'');
+      toast(c==='unsupported_type'?'Formato de imagen no compatible. Usa JPG o PNG.'
+        :/too large|exceeded|size/i.test(m)?'La foto es demasiado pesada.'
+        :/row-level security|unauthorized|permission|403/i.test(m)?'Sin permiso para subir fotos. Revisa las políticas del bucket.'
+        :/bucket not found/i.test(m)?'No existe el espacio de fotos en Supabase.'
+        :'No se pudo subir la foto. Revisa tu conexión.',4500);
     }
     S.uploads[p]--; refreshPhotos(p);
   }
@@ -532,7 +619,7 @@ async function uploadFiles(p,files){
 
 /* ---------- PDF ---------- */
 async function imgData(id){
-  const res=await fetch('/_blob/'+id); if(!res.ok) throw new Error('404');
+  const res=await fetch(photoUrl(id)); if(!res.ok) throw new Error('404');
   const b=await res.blob(); const url=URL.createObjectURL(b);
   try{ const img=new Image(); await new Promise((ok,ko)=>{ img.onload=ok; img.onerror=ko; img.src=url; });
     const s=Math.min(1,1100/Math.max(img.naturalWidth,img.naturalHeight)); const c=document.createElement('canvas');
@@ -555,10 +642,15 @@ function pdfFooter(doc,left){
   for(let i=1;i<=n;i++){ doc.setPage(i); doc.setFontSize(8); doc.setTextColor(110,120,115); doc.text(left,14,H-8); doc.text('Página '+i+' de '+n,W-14,H-8,{align:'right'}); }
 }
 function needLib(){ if(!(window.jspdf&&window.jspdf.jsPDF)){ toast('No se pudo cargar el generador de PDF. Recarga la página.',4000); return false; } return true; }
-async function deliver(name,blob,kind){
-  if(!S.downloads){ toast('Tu vista no permite descargar archivos. Ábrelo con tu cuenta de Claude.',4500); return; }
-  try{ await S.downloads.save({filename:name,data:blob}); toast(kind+' listo'); }
-  catch(e){ const c=e&&e.code; if(c!=='declined') toast(c==='rate_limited'?'Ya hay una descarga pendiente de confirmar.':'No se pudo descargar el archivo.',4000); }
+async function deliver(name,data,kind){
+  try{
+    const blob=data instanceof Blob?data:new Blob([data],{type:'text/csv;charset=utf-8'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a'); a.href=url; a.download=name; a.rel='noopener';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),60000);
+    toast(kind+' listo');
+  }catch(e){ toast('No se pudo descargar el archivo.',4000); }
 }
 async function buildPdf(r){
   const {jsPDF}=window.jspdf; const doc=new jsPDF({unit:'mm',format:'letter'});
@@ -572,13 +664,13 @@ async function buildPdf(r){
   const sn=v=>v==='si'?'Sí':v==='no'?'No':'—';
 
   title('Datos generales');
-  kv([['Estación / empresa',g.nombre],['Razón social',g.razonSocial],['Permiso CRE / autoconsumo',g.permiso],['Domicilio',g.direccion],['Municipio, estado',[g.municipio,g.estado].filter(Boolean).join(', ')],['Coordenadas GPS',g.coordenadas],['Uso del autoconsumo',g.uso],['Cuadrilla',g.cuadrilla],['Responsable del levantamiento',g.responsable],['Contacto en sitio',[g.contacto,g.telefono].filter(Boolean).join(' · ')]]);
+  kv([['Estación / empresa',g.nombre],['ID ARCA / región',g.arcaId?g.arcaId+' · '+(g.region||''):''],['Combustibles del sitio',(g.combustibles||[]).map(k=>COMB[k]).join(', ')],['Razón social',g.razonSocial],['Permiso CRE / autoconsumo',g.permiso],['Domicilio',g.direccion],['Municipio, estado',[g.municipio,g.estado].filter(Boolean).join(', ')],['Coordenadas GPS',g.coordenadas],['Uso del autoconsumo',g.uso],['Cuadrilla',g.cuadrilla],['Responsable del levantamiento',g.responsable],['Contacto en sitio',[g.contacto,g.telefono].filter(Boolean).join(' · ')]]);
   title('Resumen');
-  tbl({head:[['Tanques','Capacidad total','Consola','Dispensarios','Master / Satélite','Mangueras gasolina','Mangueras diésel','Fotos']],body:[[t.tanques,fmt(t.capacidad)+' L',sn(getP(r,'tanques.consola')),t.disp,t.master+' / '+t.satelite,t.mangGas,t.mangDie,t.fotos]],styles:{fontSize:8.8,halign:'center'}});
+  tbl({head:[['Tanques','Capacidad total','Consola','Dispensarios','Master / Satélite','Mang. gasolina','Mang. diésel','Mang. gas LP / nat.','Fotos']],body:[[t.tanques,fmt(t.capacidad)+' L',sn(getP(r,'tanques.consola')),t.disp,t.master+' / '+t.satelite,t.mangGas,t.mangDie,t.mangOtro,t.fotos]],styles:{fontSize:8.8,halign:'center'}});
   const p=r.predio||{};
   if(p.frente||p.fondo||p.superficie||p.accesos||p.colindancias){ title('Predio'); kv([['Frente × fondo',(p.frente||'—')+' m × '+(p.fondo||'—')+' m'],['Superficie',p.superficie?fmt(p.superficie)+' m²':''],['Accesos',p.accesos],['Colindancias',p.colindancias]]); }
   title('Instalaciones');
-  tbl({head:[['Instalación','¿Cuenta?','Observaciones','Fotos']],body:INST.map(([k,l])=>{ const x=getP(r,'instalaciones.'+k)||{}; return [l,sn(x.existe),x.notas||'',(x.fotos||[]).length]; }),columnStyles:{1:{halign:'center',cellWidth:20},3:{halign:'center',cellWidth:16}}});
+  tbl({head:[['Instalación','¿Cuenta?','Fotos']],body:INST.map(([k,l])=>{ const x=getP(r,'instalaciones.'+k)||{}; return [l,sn(x.existe),(x.fotos||[]).length]; }),columnStyles:{1:{halign:'center',cellWidth:24},2:{halign:'center',cellWidth:20}}});
   title('Tanques de almacenamiento');
   kv([['Consola de medición',sn(getP(r,'tanques.consola'))+(getP(r,'tanques.consola')==='si'?'  ·  '+[getP(r,'tanques.consolaMarca'),getP(r,'tanques.consolaModelo'),getP(r,'tanques.consolaEstado')].filter(Boolean).join(' · '):'')]]);
   const tq=getP(r,'tanques.lista')||[];
@@ -587,8 +679,8 @@ async function buildPdf(r){
   title('Zona de despacho');
   const ds=getP(r,'despacho.dispensarios')||[];
   if(getP(r,'despacho.islas')||getP(r,'despacho.notas')) kv([['Islas',getP(r,'despacho.islas')],['Observaciones',getP(r,'despacho.notas')]]);
-  if(ds.length) tbl({head:[['No.','Isla','Marca / modelo','Productos','Mang. gasolina','Mang. diésel','Diésel','Lados']],body:ds.map((x,i)=>[x.numero||i+1,x.isla||'',[x.marca,x.modelo].filter(Boolean).join(' '),(x.productos||[]).map(k=>LBL[k]).join(', ')||'—',x.mangGas||0,x.mangDie||0,(x.productos||[]).includes('diesel')?(LBL[x.tipoDiesel]||'—'):'N/A',x.lados||'—']),
-    foot:[['','','','Total',t.mangGas,t.mangDie,t.master+' M / '+t.satelite+' S','']],footStyles:{fillColor:[242,243,239],textColor:[23,32,29],fontStyle:'bold'},columnStyles:{4:{halign:'center'},5:{halign:'center'},6:{halign:'center'},7:{halign:'center'}}});
+  if(ds.length) tbl({head:[['No.','Isla','Marca / modelo','Productos','Mang. gasolina','Mang. diésel','Mang. gas LP / nat.','Diésel','Lados']],body:ds.map((x,i)=>[x.numero||i+1,x.isla||'',[x.marca,x.modelo].filter(Boolean).join(' '),(x.productos||[]).map(k=>LBL[k]).join(', ')||'—',x.mangGas||0,x.mangDie||0,x.mangOtro||0,(x.productos||[]).includes('diesel')?(LBL[x.tipoDiesel]||'—'):'N/A',x.lados||'—']),
+    foot:[['','','','Total',t.mangGas,t.mangDie,t.mangOtro,t.master+' M / '+t.satelite+' S','']],footStyles:{fillColor:[242,243,239],textColor:[23,32,29],fontStyle:'bold'},columnStyles:{4:{halign:'center'},5:{halign:'center'},6:{halign:'center'},7:{halign:'center'},8:{halign:'center'}}});
   title('Seguridad y servicios');
   const half=Math.ceil(SEG.length/2);
   tbl({head:[['Elemento','','Elemento','']],body:SEG.slice(0,half).map((s,i)=>{ const o=SEG[i+half]; return [s[1],sn(getP(r,'seguridad.'+s[0])),o?o[1]:'',o?sn(getP(r,'seguridad.'+o[0])):'']; }),columnStyles:{1:{halign:'center',cellWidth:14},3:{halign:'center',cellWidth:14}}});
@@ -614,7 +706,7 @@ async function buildPdf(r){
 }
 async function pdfFor(r){
   if(!needLib()) return; overlay(true,'Generando PDF…','');
-  try{ const b=await buildPdf(r); overlay(false); const nm=(getP(r,'general.nombre')||'levantamiento').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^\w]+/g,'_').slice(0,40); await deliver(r.folio+'_'+nm+'.pdf',b,'PDF'); }
+  try{ const b=await buildPdf(r); overlay(false); const nm=(getP(r,'general.nombre')||'levantamiento').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^\w]+/g,'_').slice(0,40); await deliver(r.folio+'_'+nm+'.pdf',b,'PDF'); }
   catch(e){ overlay(false); toast('No se pudo generar el PDF.',4000); }
 }
 async function pdfAll(){
@@ -636,22 +728,24 @@ async function pdfAll(){
 }
 async function csvAll(){
   const rows=rowsFiltered(); const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
-  const head=['Folio','Estatus','Estación','Razón social','Permiso','Domicilio','Municipio','Estado','Coordenadas','Fecha','Cuadrilla','Responsable',...INST.map(x=>x[1]),'Consola','Consola marca/modelo','Tanques','Capacidad total L','Cap. Regular L','Cap. Premium L','Cap. Diésel L','Detalle tanques','Dispensarios','Diésel Master','Diésel Satélite','Mangueras gasolina','Mangueras diésel','Mangueras total','Detalle dispensarios',...SEG.map(x=>x[1]),'Fotos','Observaciones'];
+  const head=['Folio','Estatus','ID ARCA','Región','Estación','Razón social','Permiso','Domicilio','Municipio','Estado','Coordenadas','Fecha','Cuadrilla','Responsable',...INST.map(x=>x[1]),'Consola','Consola marca/modelo','Tanques','Capacidad total L','Cap. Regular L','Cap. Premium L','Cap. Diésel L','Cap. Gas LP L','Cap. Gas natural L','Detalle tanques','Dispensarios','Diésel Master','Diésel Satélite','Mangueras gasolina','Mangueras diésel','Mangueras gas LP / natural','Mangueras total','Detalle dispensarios',...SEG.map(x=>x[1]),'Fotos','Observaciones'];
   const sn=v=>v==='si'?'Sí':v==='no'?'No':'';
   const lines=rows.map(d=>{ const g=d.general||{}, t=totals(d);
-    return [d.folio,d.estatus==='completo'?'Completo':'Borrador',g.nombre,g.razonSocial,g.permiso,g.direccion,g.municipio,g.estado,g.coordenadas,g.fecha,g.cuadrilla,g.responsable,
+    return [d.folio,d.estatus==='completo'?'Completo':'Borrador',g.arcaId,g.region,g.nombre,g.razonSocial,g.permiso,g.direccion,g.municipio,g.estado,g.coordenadas,g.fecha,g.cuadrilla,g.responsable,
       ...INST.map(([k])=>sn(getP(d,'instalaciones.'+k+'.existe'))),sn(getP(d,'tanques.consola')),[getP(d,'tanques.consolaMarca'),getP(d,'tanques.consolaModelo')].filter(Boolean).join(' '),
-      t.tanques,t.capacidad,t.porProd.regular||0,t.porProd.premium||0,t.porProd.diesel||0,
+      t.tanques,t.capacidad,t.porProd.regular||0,t.porProd.premium||0,t.porProd.diesel||0,t.porProd.gaslp||0,t.porProd.gasnat||0,
       (getP(d,'tanques.lista')||[]).map((x,i)=>'T'+(i+1)+': '+(LBL[x.producto]||'?')+' '+(x.capacidad||0)+' L').join(' | '),
-      t.disp,t.master,t.satelite,t.mangGas,t.mangDie,t.mangueras,
-      (getP(d,'despacho.dispensarios')||[]).map((x,i)=>'D'+(x.numero||i+1)+': '+(x.productos||[]).map(k=>LBL[k]).join('/')+' '+(Number(x.mangGas)||0)+'G+'+(Number(x.mangDie)||0)+'D'+((x.productos||[]).includes('diesel')&&x.tipoDiesel?' '+LBL[x.tipoDiesel]:'')).join(' | '),
+      t.disp,t.master,t.satelite,t.mangGas,t.mangDie,t.mangOtro,t.mangueras,
+      (getP(d,'despacho.dispensarios')||[]).map((x,i)=>'D'+(x.numero||i+1)+': '+(x.productos||[]).map(k=>LBL[k]).join('/')+' '+(Number(x.mangGas)||0)+'G+'+(Number(x.mangDie)||0)+'D'+(Number(x.mangOtro)?'+'+Number(x.mangOtro)+'LP/GN':'')+((x.productos||[]).includes('diesel')&&x.tipoDiesel?' '+LBL[x.tipoDiesel]:'')).join(' | '),
       ...SEG.map(([k])=>sn(getP(d,'seguridad.'+k))),t.fotos,d.observaciones].map(q).join(','); });
-  await deliver('Concentrado_levantamientos_'+today()+'.csv','﻿'+[head.map(q).join(','),...lines].join('\r\n'),'Archivo');
+  await deliver('Concentrado_levantamientos_'+today()+'.csv','\uFEFF'+[head.map(q).join(','),...lines].join('\r\n'),'Archivo');
 }
 
 /* ---------- Eventos ---------- */
 document.addEventListener('click',async e=>{
+  if(!e.target.closest('.arca-wrap')) hideArca();
   const b=e.target.closest('button,[data-open]'); if(!b) return;
+  if(b.dataset.arca){ applyArca(b.dataset.arca); return; }
   if(b.dataset.tab){ setTab(b.dataset.tab); return; }
   if(b.dataset.chip&&!S.readOnly){ const p=b.dataset.chip, v=b.dataset.v; setP(S.rec,p,getP(S.rec,p)===v?'':v); touched(); renderCaptura(); return; }
   if(b.dataset.multi&&!S.readOnly){ const p=b.dataset.multi, v=b.dataset.v; const a=(getP(S.rec,p)||[]).slice(); const i=a.indexOf(v); i>=0?a.splice(i,1):a.push(v); setP(S.rec,p,a); touched(); renderCaptura(); return; }
@@ -659,7 +753,9 @@ document.addEventListener('click',async e=>{
   if(b.dataset.del){ if(!armed(b)) return; const a=getP(S.rec,b.dataset.del)||[]; a.splice(Number(b.dataset.i),1); touched(); renderCaptura(); return; }
   if(b.dataset.delph){ const a=getP(S.rec,b.dataset.delph)||[]; a.splice(Number(b.dataset.i),1); touched(); refreshPhotos(b.dataset.delph); return; }
   if(b.dataset.pdf){ e.stopPropagation(); const d=S.docs.get(b.dataset.pdf); if(d) pdfFor(d); return; }
-  if(b.dataset.rm){ e.stopPropagation(); if(!armed(b)) return; try{ await S.db.doc('levantamientos/'+b.dataset.rm).delete(); toast('Levantamiento borrado'); }catch(err){ toast('No se pudo borrar.'); } return; }
+  if(b.dataset.rm){ e.stopPropagation(); if(!armed(b)) return;
+    try{ const {error}=await S.sb.from(TABLA).delete().eq('folio',b.dataset.rm); if(error) throw error; S.docs.delete(b.dataset.rm); renderConcentrado(); renderStatus(); toast('Levantamiento borrado'); }
+    catch(err){ toast('No se pudo borrar.'); } return; }
   if(b.dataset.open){ openRec(b.dataset.open); return; }
   const a=b.dataset.act;
   if(a==='new'){ S.rec=blank(); S.readOnly=false; S.showCheck=false; S.lastSaved=null; S.saveErr=null; lsSet('lt.draft',S.rec); renderCaptura(); save(); window.scrollTo(0,0); }
@@ -677,6 +773,7 @@ document.addEventListener('input',e=>{
   if(el.dataset&&el.dataset.p&&S.rec&&!S.readOnly){ let v=el.value; if(el.type==='number') v=v===''?'':Number(v); setP(S.rec,el.dataset.p,v); touched();
     if(/numero$/.test(el.dataset.p)){ const h=el.closest('.item'); if(h) h.querySelector('.item-h b').textContent='Dispensario '+(el.value||''); } }
   if(el.id==='fq'){ F.q=el.value; renderConcentrado(); }
+  if(el.id==='arcaPick') showArca(el.value);
 });
 document.addEventListener('change',e=>{
   const el=e.target;
@@ -686,33 +783,55 @@ document.addEventListener('change',e=>{
   if(el.dataset&&el.dataset.p&&S.rec&&/mang|capacidad/.test(el.dataset.p)) updSummary();
 });
 
+document.addEventListener('focusin',e=>{
+  const el=e.target; if(el.id!=='arcaPick') return;
+  const g=(S.rec&&S.rec.general)||{}; const sel=ARCA.find(a=>a[0]===g.arcaId);
+  showArca(sel&&el.value===arcaLabel(sel)?'':el.value);
+  if(sel&&el.value===arcaLabel(sel)) el.select();
+});
+document.addEventListener('keydown',e=>{
+  const el=e.target; if(el.id!=='arcaPick') return;
+  if(e.key==='Escape'){ hideArca(); return; }
+  if(e.key==='Enter'){ e.preventDefault(); const f=$('#arcaRes button[data-arca]'); if(f) applyArca(f.dataset.arca); }
+});
+
 /* ---------- Arranque ---------- */
 function banner(){
   const b=$('#banner');
-  if(S.canWrite===false) b.innerHTML='<div class="banner">Tienes acceso de solo lectura: puedes ver el concentrado y descargar PDFs, pero no capturar. Pide a la administradora acceso de Colaborador.</div>';
-  else if(S.started&&!S.dbReady) b.innerHTML='<div class="banner bad">No hay conexión con el concentrado. Inicia sesión en Claude con tu cuenta de la empresa. Lo que captures se guarda en este dispositivo.</div>';
+  if(!S.configured) b.innerHTML='<div class="banner bad">Falta pegar la llave de Supabase (SUPABASE_ANON_KEY) en el código. Mientras tanto, lo que captures se guarda solo en este teléfono y no se pueden subir fotos.</div>';
+  else if(S.started&&S.dbError) b.innerHTML='<div class="banner bad">No hay conexión con el concentrado. Revisa tu internet. Lo que captures se guarda en este dispositivo y se sube cuando vuelva la conexión.</div>';
   else b.innerHTML='';
+}
+function refreshViews(){ renderStatus(); banner(); if(S.tab==='concentrado') renderConcentrado(); else if(!S.rec) renderCaptura(); }
+async function loadAll(){
+  const {data,error}=await S.sb.from(TABLA).select('folio,data').order('actualizado_en',{ascending:false});
+  if(error) throw error;
+  S.docs=new Map((data||[]).filter(x=>x&&x.data).map(x=>[x.folio,x.data]));
+  S.dbReady=true; S.dbError=false;
 }
 async function init(){
   const local=lsGet('lt.draft'); if(local&&local.folio){ S.rec=local; }
-  setTab(location.hash==='#concentrado'?'concentrado':'captura'); renderStatus();
-  const c=window.claude; const use=n=>(c&&c.use?c.use(n):Promise.resolve(null)).catch(()=>null);
-  const [db,assets,downloads,user]=await Promise.all([use('db'),use('assets'),use('downloads'),use('user')]);
-  Object.assign(S,{db,assets,downloads,user,started:true});
-  if(user){ try{ S.uid=await user.id(); S.isAdmin=await user.canEdit(); S.canWrite=await user.can('data.write'); }catch(e){} }
-  if(S.rec&&!S.rec.creadoPor&&S.uid) S.rec.creadoPor=S.uid;
-  if(db){
-    db.collection('levantamientos').onSnapshot(async snap=>{
-      S.docs=new Map(snap.docs.map(d=>[d.id,d.data()])); S.dbReady=true; renderStatus(); banner();
-      if(S.tab==='concentrado') renderConcentrado(); else if(!S.rec) renderCaptura();
-      if(user){ const ids=[...new Set([...S.docs.values()].map(d=>d.creadoPor).filter(x=>x&&!(x in S.names)))]; if(ids.length){ try{ const ps=await user.profiles(ids); ids.forEach(id=>S.names[id]=(ps[id]&&ps[id].name)||''); if(S.tab==='concentrado') renderConcentrado(); }catch(e){} } }
-    },err=>{ S.dbReady=false; renderStatus(); banner(); });
-  }
-  banner(); renderStatus(); if(S.tab==='captura') renderCaptura();
-  if(S.rec&&db&&S.canWrite!==false) save();
+  S.configured = !!(window.supabase&&window.supabase.createClient) && !/PEGA_AQUI/.test(SUPABASE_ANON_KEY);
+  if(S.configured){ S.sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{persistSession:false,autoRefreshToken:false}}); }
+  setTab(location.hash==='#concentrado'?'concentrado':'captura'); renderStatus(); banner();
+  S.started=true;
+  if(!S.sb){ refreshViews(); return; }
+  try{ await loadAll(); }catch(e){ S.dbReady=false; S.dbError=true; }
+  refreshViews();
+  // Cambios en vivo de otras cuadrillas
+  S.sb.channel('levantamientos-live')
+    .on('postgres_changes',{event:'*',schema:'public',table:TABLA},payload=>{
+      if(payload.eventType==='DELETE'){ const f=payload.old&&payload.old.folio; if(f) S.docs.delete(f); }
+      else if(payload.new&&payload.new.data){ S.docs.set(payload.new.folio,payload.new.data); }
+      refreshViews();
+    })
+    .subscribe();
+  // Al regresar a la app, recargar por si se perdió algún cambio
+  document.addEventListener('visibilitychange',async()=>{ if(document.visibilityState==='visible'){ try{ await loadAll(); refreshViews(); }catch(e){} } });
+  if(S.rec) save();
 }
 init();
 })();
 </script>
-
-</body></html>
+</body>
+</html>
