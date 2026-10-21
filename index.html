@@ -117,6 +117,7 @@ label.addph input{position:absolute;opacity:0;width:1px;height:1px}
 .arca-res button:last-child{border-bottom:0}
 .arca-res button:hover,.arca-res button:focus-visible{background:color-mix(in srgb,var(--signal) 14%,transparent)}
 .arca-res button span{color:var(--muted);font-size:13px;white-space:nowrap}
+.arca-res button.arca-otra{background:color-mix(in srgb,var(--signal) 8%,transparent);border-bottom:2px solid var(--line)}
 .arca-res p{margin:0;padding:10px 12px;font-size:14px;color:var(--muted)}
 
 .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
@@ -271,6 +272,7 @@ const LBL = Object.fromEntries([...PRODT,['master','Master'],['satelite','Satél
 // No se guarda la antigüedad en años: se guarda la fecha y los años se cuentan al día de hoy, así cada año sale actualizada.
 const ARCA = [["0001", "P. Matamoros", "Noreste", "Tamaulipas", "LP/18532/EXP/AUT/2016", "Prolongación Calixto Ayala No. 200, Col San Rafael", ["gasolina", "gaslp", "diesel", "gasnat"]], ["0002", "P. Piedras Negras", "Noreste", "Coahuila", "LP/18577/EXP/AUT/2016", "Carretera 57, Km13, Tramo Piedras Negras-Nava", ["gaslp", "gasnat"]], ["0003", "P. CD Juárez (Médanos)", "Norte", "Chihuahua", "LP/18541/EXP/AUT/2016", "Blvd. Oscar Flores Sánchez No. 9755 Col. Puente Alto", ["gaslp", "gasnat"]], ["0004", "P. Chihuahua", "Norte", "Chihuahua", "LP/18493/EXP/AUT/2016", "Av. Cristóbal Colon No. 18701 Col. Las Carolinas", ["gaslp", "gasnat"]], ["0005", "P. Guadiana (Dgo)", "Norte", "Durango", "LP/18575/EXP/AUT/2016", "Carretera Durango - Mezquital Km 3.0", ["gasolina", "gaslp", "diesel", "gasnat"]], ["0006", "Juárez SLP", "Occidente", "San Luis Potosí", "LP/19057/EXP/AUT/2016", "Fidel Velázquez, Lado Oriente. S/N, Benito Juárez", ["gasolina", "gaslp", "diesel"]], ["0007", "Los Altos", "Occidente", "Jalisco", "LP/18539/EXP/AUT/2016", "Blvd. Anacleto Glez Flores Sur 2145, Las Aguilillas", ["gaslp"]], ["0008", "P. Las Fuentes (Gdj)", "Occidente", "Jalisco", "LP/18514/EXP/AUT/2016", "Av. Adolfo López Mateos Sur 6285, El Mante", ["gasolina", "gaslp", "diesel", "gasnat"]], ["0009", "P. San Luis", "Occidente", "San Luis Potosí", "LP/18523/EXP/AUT/2016", "Periférico, Manuel Gomez Morin #3005 Fracc. Del Saucito", ["gasolina", "gaslp", "diesel", "gasnat"]], ["0010", "P. Zapopan (Gdj)", "Occidente", "Jalisco", "LP/18361/EXP/AUT/2016", "Av. Base Aérea Km 2 2000, San Juan de Ocotán", ["gasolina", "gaslp", "diesel", "gasnat"]], ["0011", "Cabo San Lucas", "Pacífico", "Baja California Sur", "", "Carretera, Cabo San Lucas - Todos los Santos Km 7.5, Los Cangrejos", ["gaslp"]], ["0012", "Mazatlán", "Pacífico", "Sinaloa", "", "Mazatlán-Culiacán S/N, El Venadillo", ["gaslp"]], ["0013", "P. Culiacán", "Pacífico", "Sinaloa", "", "Calz. Aeropuerto 5501, Gasolinera del Valle", ["gaslp", "gasnat"]], ["0014", "P. Hermosillo", "Pacífico", "Sonora", "LP/18518/EXP/AUT/201", "Blvd. Luis Encinas J. 632, El Torreón", ["gaslp", "gasnat"]], ["0015", "P. La Paz", "Pacífico", "Baja California Sur", "", "Luis Donaldo Colosio 143, Jardines del Sur", ["gaslp", "gasnat"]], ["0016", "P. Mexicali", "Pacífico", "Baja California", "LP/18524/EXP/AUT/2016", "Blvd Lázaro Cárdenas 2400, Plutarco Elías Calles", ["gaslp", "gasnat"]], ["0017", "Fundadores", "Noreste", "Coahuila", "", "Blvd. Fundadores No. 2690", ["gaslp", "diesel"]], ["0018", "Lincoln", "Noreste", "Nuevo León", "", "Ave. Lincoln No. 7000 Pte Col. Plutarco Elias Calles", ["gasolina", "diesel"]], ["0019", "Monclova", "Noreste", "Coahuila", "", "Libramiento Carlos Salinas de Gortari S/N, Col. Estancias de San Juan Bautista", ["gaslp", "diesel"]], ["0020", "Monterrey", "Noreste", "Nuevo León", "", "Av. Alfonso Reyes No. 3001 Nte, Col. Regina", ["gasolina", "diesel"]], ["0021", "P. Ciel Saltillo", "Noreste", "Coahuila", "", "Fundadores 6659 - San Jose de los Cerritos", ["gaslp", "diesel"]], ["0022", "P. Guadalupe", "Noreste", "Nuevo León", "", "Ave. Lázaro Cardenas No. 1213 Fracc. El Sabino", ["gasolina", "gaslp", "diesel", "gasnat"]], ["0023", "P. Insurgentes", "Noreste", "Nuevo León", "", "Ave. Insurgentes No. 1618 Pte Col. Colinas de San Jerónimo", ["gasolina", "diesel", "gasnat"]], ["0024", "Suc. Estadio", "Norte", "Coahuila", "", "Calzada Moctezuma #703 Col. Carolinas", ["gasolina", "gaslp", "diesel"]], ["0025", "Suc. Santa Rita", "Norte", "Durango", "", "Boulevard Mexico 222 Col. Ex-ejido Cuba", ["gasolina", "gaslp", "diesel"]], ["0026", "San Agustín (Torreón)", "Norte", "", "", "C. Alberto N. Swain 347, Cd Industrial", ["gasnat"]], ["0027", "Zacatecas", "Norte", "Zacatecas", "", "Carretera 54 vía corta Zacatecas-Guadalajara Km. 306.2 Colonia Cieneguillas", ["gasolina", "gaslp", "diesel"]], ["0028", "Belenes", "Occidente", "Jalisco", "", "Blvd a Bosques de San Isidro 580 Zapopan Jalisco", ["gasolina", "gaslp", "diesel"]], ["0029", "P. Aguascalientes", "Occidente", "Aguascalientes", "", "Camino a San Bartolo #100 Ejido Coyotes", ["gasolina", "gaslp", "diesel", "gasnat"]], ["0030", "P. Las Trojes (Ags)", "Occidente", "Aguascalientes", "", "Primera Priv. Niños Héroes, Trojes de Alonso", ["gasolina", "gaslp", "diesel", "gasnat"]], ["0031", "Suc. Toluquilla", "Occidente", "Jalisco", "", "Anillo Perif. Sur Manuel Gómez Morín 6740, Tlaquepaque", ["gasolina", "diesel"]]];
 const COMB = {gasolina:'Gasolina',gaslp:'Gas LP',diesel:'Diésel',gasnat:'Gas natural'};
+const OTRA_ID='OTRA', OTRA_LABEL='Otra estación (no está en la lista)';
 const arcaLabel = a => a[1]+' — '+(a[3]||'sin estado')+' (ID '+a[0]+')';
 const ARCA_ORD = ARCA.slice().sort((a,b)=>a[1].localeCompare(b[1],'es'));
 function combustiblesCapturados(r){
@@ -513,9 +515,10 @@ function photos(p,max){
 function arcaPicker(){
   const g=S.rec.general||{}; const sel=ARCA.find(a=>a[0]===g.arcaId);
   return `<div class="inst"><div class="f arca-wrap"><span>Estación ARCA (llena los datos sola)</span>
-    <input id="arcaPick" type="text" autocomplete="off" placeholder="Toca aquí y elige la estación, o escribe para buscar…" value="${sel?esc(arcaLabel(sel)):''}"${S.readOnly?' disabled':''}>
+    <input id="arcaPick" type="text" autocomplete="off" placeholder="Toca aquí y elige la estación, o escribe para buscar…" value="${sel?esc(arcaLabel(sel)):g.otra?esc(OTRA_LABEL):''}"${S.readOnly?' disabled':''}>
     <div id="arcaRes" class="arca-res" hidden></div>
-    <small class="hint">Elige la estación de la lista. Se llenan solos el nombre, la razón social, el permiso, el estado y el domicilio. Después puedes corregir lo que haga falta.</small></div>
+    <small class="hint">Elige la estación de la lista. Se llenan solos el nombre, la razón social, el permiso, el estado y el domicilio. Después puedes corregir lo que haga falta. Si la estación no está en la lista, elige <b>Otra estación</b> y llena los datos a mano.</small></div>
+    ${g.otra&&!sel?'<p class="hint">Otra estación (fuera del directorio ARCA): llena todos los datos generales a mano.</p>':''}
     ${sel?`<p class="hint">ID ${esc(sel[0])} · Región ${esc(sel[2])} · Combustibles: ${esc(sel[6].map(k=>COMB[k]).join(', ')||'—')}</p>`:''}</div>`;
 }
 const norm = x => String(x||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
@@ -523,18 +526,27 @@ function showArca(q){
   const box=$('#arcaRes'); if(!box) return;
   const n=norm(q).trim();
   const m=ARCA_ORD.filter(a=>!n||norm(a[0]+' '+a[1]+' '+a[2]+' '+a[3]+' '+arcaLabel(a)).includes(n));
-  box.innerHTML=m.length?m.map(a=>`<button type="button" data-arca="${esc(a[0])}"><b>${esc(a[1])}</b><span>${esc((a[3]||'sin estado')+' · ID '+a[0])}</span></button>`).join('')
-    :'<p>No hay estaciones con ese nombre. Revisa cómo lo escribiste.</p>';
+  const otra=`<button type="button" data-arca="${OTRA_ID}" class="arca-otra"><b>Otra estación</b><span>no está en la lista · llenar a mano</span></button>`;
+  box.innerHTML=otra+(m.length?m.map(a=>`<button type="button" data-arca="${esc(a[0])}"><b>${esc(a[1])}</b><span>${esc((a[3]||'sin estado')+' · ID '+a[0])}</span></button>`).join('')
+    :'<p>No hay estaciones con ese nombre. Revisa cómo lo escribiste o elige «Otra estación».</p>');
   box.hidden=false;
 }
 function hideArca(){ const box=$('#arcaRes'); if(box) box.hidden=true; }
 function applyArca(id){
   hideArca();
   if(!S.rec||S.readOnly) return;
-  const a=ARCA.find(x=>x[0]===id); if(!a) return;
   const g=S.rec.general||(S.rec.general={});
+  if(id===OTRA_ID){
+    if(g.otra) return;
+    // Estación fuera del directorio: se vacían los datos que venían de ARCA para capturarlos a mano.
+    Object.assign(g,{ otra:true, arcaId:'', region:'', nombre:'', razonSocial:'', razonManual:false, permiso:'', estado:'', municipio:'', direccion:'', combustibles:[], inicioOperacion:'' });
+    touched(); renderCaptura(); toast('Llena los datos generales a mano.');
+    const n=document.getElementById('general.nombre'); if(n) n.focus({preventScroll:true});
+    return;
+  }
+  const a=ARCA.find(x=>x[0]===id); if(!a) return;
   if(g.arcaId===a[0]&&g.nombre==='ARCA '+a[1]) return;
-  Object.assign(g,{ arcaId:a[0], region:a[2], nombre:'ARCA '+a[1], razonSocial:arcaRazon(a[6]), razonManual:false, permiso:a[4], estado:a[3], direccion:a[5], combustibles:a[6].slice(), inicioOperacion:a[7]||g.inicioOperacion||'' });
+  Object.assign(g,{ otra:false, arcaId:a[0], region:a[2], nombre:'ARCA '+a[1], razonSocial:arcaRazon(a[6]), razonManual:false, permiso:a[4], estado:a[3], direccion:a[5], combustibles:a[6].slice(), inicioOperacion:a[7]||g.inicioOperacion||'' });
   touched(); renderCaptura(); toast('Datos de '+a[1]+' cargados. Falta el municipio.');
 }
 function resizeSeg(k){
@@ -666,6 +678,7 @@ function renderCaptura(){
   h+=`<div class="actions">
     ${S.readOnly?'':`<button type="button" class="btn sig" data-act="complete">${r.estatus==='completo'?'Completo ✓ · Revisar':'Marcar como completo'}</button>`}
     <button type="button" class="btn pri" data-act="pdf">Descargar PDF</button>
+    <button type="button" class="btn" data-act="pdffotos">PDF solo fotos</button>
     <button type="button" class="btn" data-act="xlsone">Excel</button>
     ${S.readOnly?'':`<button type="button" class="btn" data-act="new">+ Nuevo</button>`}
     ${canDelete()&&S.docs.has(r.folio)?`<button type="button" class="btn ghost danger" data-rm="${esc(r.folio)}">Borrar</button>`:''}
@@ -708,7 +721,7 @@ function renderConcentrado(){
   const T=rows.reduce((a,d)=>{ const t=totals(d); a.tq+=t.tanques; a.cap+=t.capacidad; a.ds+=t.disp; a.m+=t.mangueras; a.f+=t.fotos; a.ok+=d.estatus==='completo'?1:0; return a; },{tq:0,cap:0,ds:0,m:0,f:0,ok:0});
   const focus=document.activeElement&&document.activeElement.id; const selS=focus==='fq'?[document.activeElement.selectionStart]:null;
   const pill=d=>`<span class="pill ${d.estatus==='completo'?'ok':'draft'}">${d.estatus==='completo'?'Completo':'Borrador'}</span>`;
-  const acts=d=>{ const canDel=canDelete(); return `<div class="rowact"><button type="button" class="btn sm" data-pdf="${esc(d.folio)}">PDF</button>${canDel?`<button type="button" class="btn sm ghost danger" data-rm="${esc(d.folio)}">Borrar</button>`:''}</div>`; };
+  const acts=d=>{ const canDel=canDelete(); return `<div class="rowact"><button type="button" class="btn sm" data-pdf="${esc(d.folio)}">PDF</button><button type="button" class="btn sm" data-pdffotos="${esc(d.folio)}">Fotos</button>${canDel?`<button type="button" class="btn sm ghost danger" data-rm="${esc(d.folio)}">Borrar</button>`:''}</div>`; };
   el.innerHTML=`
   <div class="summary">
     <div><small>Levantamientos</small><b>${rows.length}</b></div>
@@ -947,6 +960,33 @@ async function buildPdf(r){
   pdfFooter(doc,'Folio '+r.folio+' · '+(g.nombre||'')+' · generado '+new Date().toLocaleString('es-MX'));
   return doc.output('blob');
 }
+async function buildPhotosPdf(r){
+  const {jsPDF}=window.jspdf; const doc=new jsPDF({unit:'mm',format:'letter'});
+  const W=doc.internal.pageSize.getWidth(), H=doc.internal.pageSize.getHeight(), M=14; let y=32;
+  const g=r.general||{}, ph=collectPhotos(r);
+  pdfHeader(doc,'Fotos de evidencia',(g.nombre||'Sin nombre')+'   ·   Folio '+r.folio+'   ·   Fecha '+(g.fecha||'—'));
+  const gap=6, cw=(W-2*M-gap)/2, ch=66;
+  for(let i=0;i<ph.length;i++){
+    overlay(true,'Generando PDF de fotos…','Foto '+(i+1)+' de '+ph.length);
+    const col=i%2;
+    if(col===0&&y+ch+9>H-16){ doc.addPage(); y=18; }
+    const x=M+col*(cw+gap);
+    doc.setDrawColor(...LINE); doc.setLineWidth(.2); doc.rect(x,y,cw,ch);
+    try{ const im=await imgData(ph[i].id); const s=Math.min(cw/im.w,ch/im.h); const w=im.w*s, h=im.h*s; doc.addImage(im.data,'JPEG',x+(cw-w)/2,y+(ch-h)/2,w,h); }
+    catch(e){ doc.setFontSize(9); doc.setTextColor(140); doc.text('Foto no disponible',x+cw/2,y+ch/2,{align:'center'}); doc.setTextColor(...INK); }
+    doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...INK); doc.text(doc.splitTextToSize((i+1)+'. '+ph[i].cap,cw)[0],x,y+ch+4.2);
+    if(col===1||i===ph.length-1) y+=ch+9;
+  }
+  pdfFooter(doc,'Folio '+r.folio+' · '+(g.nombre||'')+' · generado '+new Date().toLocaleString('es-MX'));
+  return doc.output('blob');
+}
+async function pdfFotos(r){
+  if(!r) return; if(!needLib()) return;
+  if(!collectPhotos(r).length){ toast('Este levantamiento todavía no tiene fotos.'); return; }
+  overlay(true,'Generando PDF de fotos…','');
+  try{ const b=await buildPhotosPdf(r); overlay(false); const nm=(getP(r,'general.nombre')||'levantamiento').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^\w]+/g,'_').slice(0,40); await deliver(r.folio+'_'+nm+'_fotos.pdf',b,'PDF de fotos'); }
+  catch(e){ overlay(false); toast('No se pudo generar el PDF de fotos.',4000); }
+}
 async function pdfFor(r){
   if(!needLib()) return; overlay(true,'Generando PDF…','');
   try{ const b=await buildPdf(r); overlay(false); const nm=(getP(r,'general.nombre')||'levantamiento').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^\w]+/g,'_').slice(0,40); await deliver(r.folio+'_'+nm+'.pdf',b,'PDF'); }
@@ -1016,6 +1056,7 @@ document.addEventListener('click',async e=>{
   if(b.dataset.del){ if(!armed(b)) return; const a=getP(S.rec,b.dataset.del)||[]; a.splice(Number(b.dataset.i),1); touched(); renderCaptura(); return; }
   if(b.dataset.delph){ const a=getP(S.rec,b.dataset.delph)||[]; a.splice(Number(b.dataset.i),1); touched(); refreshPhotos(b.dataset.delph); return; }
   if(b.dataset.pdf){ e.stopPropagation(); const d=S.docs.get(b.dataset.pdf); if(d) pdfFor(d); return; }
+  if(b.dataset.pdffotos){ e.stopPropagation(); const d=S.docs.get(b.dataset.pdffotos); if(d) pdfFotos(d); return; }
   if(b.dataset.rm){ e.stopPropagation(); if(!armed(b)) return;
     if(!canDelete()){ toast('Solo un administrador puede borrar levantamientos.'); return; }
     const f=b.dataset.rm;
@@ -1031,6 +1072,7 @@ document.addEventListener('click',async e=>{
   else if(a==='close'){ if(S.timer){ clearTimeout(S.timer); S.timer=null; await save(); } S.rec=null; S.readOnly=false; renderCaptura(); renderStatus(); window.scrollTo(0,0); }
   else if(a==='xlsone'){ excelFor([S.rec],S.rec.folio+'_levantamiento.xlsx'); }
   else if(a==='pdf'){ pdfFor(S.rec); }
+  else if(a==='pdffotos'){ pdfFotos(S.rec); }
   else if(a==='complete'){ const v=validate(S.rec); S.showCheck=true;
     if(!v.req.length){ S.rec.estatus='completo'; touched(); toast('Marcado como completo. Ya puedes descargar el PDF.'); } else if(S.rec.estatus==='completo'){ S.rec.estatus='borrador'; touched(); }
     renderCaptura(); const c=$('#checkbox'); if(c) c.scrollIntoView({behavior:'smooth',block:'center'}); }
@@ -1063,8 +1105,9 @@ document.addEventListener('change',e=>{
 document.addEventListener('focusin',e=>{
   const el=e.target; if(el.id!=='arcaPick') return;
   const g=(S.rec&&S.rec.general)||{}; const sel=ARCA.find(a=>a[0]===g.arcaId);
-  showArca(sel&&el.value===arcaLabel(sel)?'':el.value);
-  if(sel&&el.value===arcaLabel(sel)) el.select();
+  const cur=(sel&&el.value===arcaLabel(sel))||(g.otra&&el.value===OTRA_LABEL);
+  showArca(cur?'':el.value);
+  if(cur) el.select();
 });
 document.addEventListener('keydown',e=>{
   const el=e.target; if(el.id!=='arcaPick') return;
