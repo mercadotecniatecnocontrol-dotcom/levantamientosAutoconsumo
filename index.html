@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Levantamientos Autoconsumo</title>
+<title>Memoria técnica</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
@@ -175,6 +175,19 @@ tfoot td{font-weight:600;background:var(--bg);border-bottom:0}
 .card .nums span{background:var(--chip);border-radius:99px;padding:3px 10px;font-size:13px;font-family:var(--f-mono)}
 @media (max-width:720px){ .tablewrap.big{display:none} .cards{display:flex} }
 .firma{display:flex;flex-direction:column;gap:6px}
+/* Acceso */
+.who{display:flex;align-items:center;gap:8px;font-size:13px;flex-wrap:wrap}
+.who span{opacity:.9;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.who em{font-style:normal;font-size:11px;font-weight:600;background:var(--red);color:#fff;border-radius:99px;padding:2px 8px}
+.who button{border:1px solid rgba(255,255,255,.45);background:transparent;color:#fff;border-radius:7px;padding:5px 10px;font-weight:600;cursor:pointer}
+.login{max-width:420px;margin:24px auto 0;width:100%;background:var(--surface);border:1px solid var(--line);border-top:5px solid var(--red);border-radius:12px;padding:22px 20px;display:flex;flex-direction:column;gap:14px}
+.login h1{margin:0;font-family:var(--f-display);font-size:30px;text-transform:uppercase;letter-spacing:.02em;line-height:1.05;color:var(--brand)}
+.login p{margin:0;color:var(--muted);font-size:14px}
+.login input[type=email],.login input[type=password]{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:11px 12px;font-size:16px}
+.login .err{color:var(--bad);background:var(--bad-soft);border-radius:8px;padding:9px 12px;font-size:14px}
+.login .btn{width:100%;padding:12px}
+textarea#descripcion{min-height:220px;line-height:1.55}
+.descbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -183,11 +196,12 @@ tfoot td{font-weight:600;background:var(--bg);border-bottom:0}
 <header class="top">
   <div class="wrap">
     <div class="logo"><img id="logoimg" alt="Tecnocontrol"></div>
-    <div class="brand"><b>Levantamiento topográfico</b><span>Registro de estaciones de autoconsumo</span></div>
-    <div class="tabs" role="tablist">
+    <div class="brand"><b>Memoria técnica</b><span>Registro de estaciones de autoconsumo</span></div>
+    <div class="tabs" id="tabs" role="tablist" hidden>
       <button id="tab-captura" role="tab" aria-selected="true" data-tab="captura">Captura</button>
       <button id="tab-concentrado" role="tab" aria-selected="false" data-tab="concentrado">Concentrado</button>
     </div>
+    <div class="who" id="who" hidden></div>
   </div>
   <div class="stripe"></div>
 </header>
@@ -196,7 +210,8 @@ tfoot td{font-weight:600;background:var(--bg);border-bottom:0}
 
 <main class="wrap">
   <div id="banner"></div>
-  <section id="view-captura"></section>
+  <section id="view-login" hidden></section>
+  <section id="view-captura" hidden></section>
   <section id="view-concentrado" hidden></section>
 </main>
 <div id="toast" class="toast" hidden></div>
@@ -248,7 +263,12 @@ const PRODT = [['regular','Regular'],['premium','Premium'],['diesel','Diésel'],
 const LBL = Object.fromEntries([...PRODT,['master','Master'],['satelite','Satélite'],['na','No aplica'],['subterraneo','Subterráneo'],['superficial','Superficial'],['doble','Doble pared'],['sencilla','Pared sencilla'],['si','Sí'],['no','No']]);
 
 /* ---------- Directorio de estaciones ARCA ---------- */
-// [ID CG, sitio, región, estado, permiso, dirección, combustibles]  (fuente: DIRECTORIO_ESTACIONES_ARCA.xlsx)
+// [ID CG, sitio, región, estado, permiso, dirección, combustibles, inicio de operaciones]  (fuente: DIRECTORIO_ESTACIONES_ARCA.xlsx)
+// PENDIENTE (antigüedad): cuando el Excel traiga la columna "FECHA DE INICIO DE OPERACIONES" (la que dice el permiso),
+// agregarla como 8.º dato de cada estación en formato "AAAA-MM-DD" (o solo "AAAA" si únicamente se conoce el año).
+// Ejemplo: ["0004", "P. Chihuahua", ..., ["gaslp","gasnat"], "2016-03-15"]
+// Con eso, al elegir la estación se llena sola la fecha de inicio y la antigüedad se calcula sola.
+// No se guarda la antigüedad en años: se guarda la fecha y los años se cuentan al día de hoy, así cada año sale actualizada.
 const ARCA = [["0001", "P. Matamoros", "Noreste", "Tamaulipas", "LP/18532/EXP/AUT/2016", "Prolongación Calixto Ayala No. 200, Col San Rafael", ["gasolina", "gaslp", "diesel", "gasnat"]], ["0002", "P. Piedras Negras", "Noreste", "Coahuila", "LP/18577/EXP/AUT/2016", "Carretera 57, Km13, Tramo Piedras Negras-Nava", ["gaslp", "gasnat"]], ["0003", "P. CD Juárez (Médanos)", "Norte", "Chihuahua", "LP/18541/EXP/AUT/2016", "Blvd. Oscar Flores Sánchez No. 9755 Col. Puente Alto", ["gaslp", "gasnat"]], ["0004", "P. Chihuahua", "Norte", "Chihuahua", "LP/18493/EXP/AUT/2016", "Av. Cristóbal Colon No. 18701 Col. Las Carolinas", ["gaslp", "gasnat"]], ["0005", "P. Guadiana (Dgo)", "Norte", "Durango", "LP/18575/EXP/AUT/2016", "Carretera Durango - Mezquital Km 3.0", ["gasolina", "gaslp", "diesel", "gasnat"]], ["0006", "Juárez SLP", "Occidente", "San Luis Potosí", "LP/19057/EXP/AUT/2016", "Fidel Velázquez, Lado Oriente. S/N, Benito Juárez", ["gasolina", "gaslp", "diesel"]], ["0007", "Los Altos", "Occidente", "Jalisco", "LP/18539/EXP/AUT/2016", "Blvd. Anacleto Glez Flores Sur 2145, Las Aguilillas", ["gaslp"]], ["0008", "P. Las Fuentes (Gdj)", "Occidente", "Jalisco", "LP/18514/EXP/AUT/2016", "Av. Adolfo López Mateos Sur 6285, El Mante", ["gasolina", "gaslp", "diesel", "gasnat"]], ["0009", "P. San Luis", "Occidente", "San Luis Potosí", "LP/18523/EXP/AUT/2016", "Periférico, Manuel Gomez Morin #3005 Fracc. Del Saucito", ["gasolina", "gaslp", "diesel", "gasnat"]], ["0010", "P. Zapopan (Gdj)", "Occidente", "Jalisco", "LP/18361/EXP/AUT/2016", "Av. Base Aérea Km 2 2000, San Juan de Ocotán", ["gasolina", "gaslp", "diesel", "gasnat"]], ["0011", "Cabo San Lucas", "Pacífico", "Baja California Sur", "", "Carretera, Cabo San Lucas - Todos los Santos Km 7.5, Los Cangrejos", ["gaslp"]], ["0012", "Mazatlán", "Pacífico", "Sinaloa", "", "Mazatlán-Culiacán S/N, El Venadillo", ["gaslp"]], ["0013", "P. Culiacán", "Pacífico", "Sinaloa", "", "Calz. Aeropuerto 5501, Gasolinera del Valle", ["gaslp", "gasnat"]], ["0014", "P. Hermosillo", "Pacífico", "Sonora", "LP/18518/EXP/AUT/201", "Blvd. Luis Encinas J. 632, El Torreón", ["gaslp", "gasnat"]], ["0015", "P. La Paz", "Pacífico", "Baja California Sur", "", "Luis Donaldo Colosio 143, Jardines del Sur", ["gaslp", "gasnat"]], ["0016", "P. Mexicali", "Pacífico", "Baja California", "LP/18524/EXP/AUT/2016", "Blvd Lázaro Cárdenas 2400, Plutarco Elías Calles", ["gaslp", "gasnat"]], ["0017", "Fundadores", "Noreste", "Coahuila", "", "Blvd. Fundadores No. 2690", ["gaslp", "diesel"]], ["0018", "Lincoln", "Noreste", "Nuevo León", "", "Ave. Lincoln No. 7000 Pte Col. Plutarco Elias Calles", ["gasolina", "diesel"]], ["0019", "Monclova", "Noreste", "Coahuila", "", "Libramiento Carlos Salinas de Gortari S/N, Col. Estancias de San Juan Bautista", ["gaslp", "diesel"]], ["0020", "Monterrey", "Noreste", "Nuevo León", "", "Av. Alfonso Reyes No. 3001 Nte, Col. Regina", ["gasolina", "diesel"]], ["0021", "P. Ciel Saltillo", "Noreste", "Coahuila", "", "Fundadores 6659 - San Jose de los Cerritos", ["gaslp", "diesel"]], ["0022", "P. Guadalupe", "Noreste", "Nuevo León", "", "Ave. Lázaro Cardenas No. 1213 Fracc. El Sabino", ["gasolina", "gaslp", "diesel", "gasnat"]], ["0023", "P. Insurgentes", "Noreste", "Nuevo León", "", "Ave. Insurgentes No. 1618 Pte Col. Colinas de San Jerónimo", ["gasolina", "diesel", "gasnat"]], ["0024", "Suc. Estadio", "Norte", "Coahuila", "", "Calzada Moctezuma #703 Col. Carolinas", ["gasolina", "gaslp", "diesel"]], ["0025", "Suc. Santa Rita", "Norte", "Durango", "", "Boulevard Mexico 222 Col. Ex-ejido Cuba", ["gasolina", "gaslp", "diesel"]], ["0026", "San Agustín (Torreón)", "Norte", "", "", "C. Alberto N. Swain 347, Cd Industrial", ["gasnat"]], ["0027", "Zacatecas", "Norte", "Zacatecas", "", "Carretera 54 vía corta Zacatecas-Guadalajara Km. 306.2 Colonia Cieneguillas", ["gasolina", "gaslp", "diesel"]], ["0028", "Belenes", "Occidente", "Jalisco", "", "Blvd a Bosques de San Isidro 580 Zapopan Jalisco", ["gasolina", "gaslp", "diesel"]], ["0029", "P. Aguascalientes", "Occidente", "Aguascalientes", "", "Camino a San Bartolo #100 Ejido Coyotes", ["gasolina", "gaslp", "diesel", "gasnat"]], ["0030", "P. Las Trojes (Ags)", "Occidente", "Aguascalientes", "", "Primera Priv. Niños Héroes, Trojes de Alonso", ["gasolina", "gaslp", "diesel", "gasnat"]], ["0031", "Suc. Toluquilla", "Occidente", "Jalisco", "", "Anillo Perif. Sur Manuel Gómez Morín 6740, Tlaquepaque", ["gasolina", "diesel"]]];
 const COMB = {gasolina:'Gasolina',gaslp:'Gas LP',diesel:'Diésel',gasnat:'Gas natural'};
 const arcaLabel = a => a[1]+' — '+(a[3]||'sin estado')+' (ID '+a[0]+')';
@@ -285,10 +305,127 @@ function putDraft(r){ if(!r||!r.folio) return; const d=drafts(); d[r.folio]=r; l
 function dropDraft(folio,ver){ const d=drafts(); if(d[folio]&&(!ver||d[folio].actualizadoEn===ver)){ delete d[folio]; lsSet('lt.drafts',d); } }
 function deviceId(){ let id=lsGet('lt.device'); if(!id){ id='dev-'+Date.now().toString(36)+'-'+rid(); lsSet('lt.device',id); } return id; }
 
+/* ---------- Antigüedad de la estación ---------- */
+// La antigüedad se cuenta desde la fecha de inicio de operaciones hasta HOY, por eso cada vez que se genera el PDF sale actualizada.
+// PENDIENTE (vigencia del permiso): cuando el Excel traiga la fecha de otorgamiento y la vigencia del permiso
+// (se cree que son 30 años; confirmarlo con el Excel), mostrar un aviso 2 años antes de que venza.
+// Idea: const VIGENCIA_ANIOS=30, AVISO_ANIOS=2; vence = inicio + VIGENCIA_ANIOS; si hoy >= vence - AVISO_ANIOS, avisar en la captura, el PDF y el concentrado.
+const MESES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+function parseFecha(v){ const s=String(v||'').trim(); let m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(s); if(m) return {y:+m[1],m:+m[2],d:+m[3]}; m=/^(\d{4})$/.exec(s); if(m) return {y:+m[1],m:0,d:0}; return null; }
+function fechaLarga(v){ const f=parseFecha(v); if(!f) return ''; return f.m?f.d+' de '+MESES[f.m-1]+' de '+f.y:String(f.y); }
+function antiguedad(v){
+  const f=parseFecha(v); if(!f) return null; const h=new Date(); const hy=h.getFullYear(), hm=h.getMonth()+1, hd=h.getDate();
+  let a=hy-f.y; if(f.m&&(hm<f.m||(hm===f.m&&hd<f.d))) a--; return a<0?null:a;
+}
+/* ---------- Redacción en español ---------- */
+const NUM=['cero','uno','dos','tres','cuatro','cinco','seis','siete','ocho','nueve','diez'];
+function num(n,fem,pron){ n=Number(n)||0; if(n===1) return fem?'una':(pron?'uno':'un'); return n<=10?NUM[n]:fmt(n); }
+function cnt(n,sing,plur,fem){ return num(n,fem)+' '+(Number(n)===1?sing:plur); }
+function antTxt(a){ return a===0?'menos de un año':cnt(a,'año','años'); }
+function lista(a,conj){ a=a.filter(Boolean); conj=conj||'y'; if(a.length<2) return a[0]||''; const last=a[a.length-1]; let c=conj;
+  if(conj==='y'&&/^(i|hi)(?!e)/i.test(norm(last))&&!/^hi[aeou]/i.test(norm(last))) c='e'; if(conj==='o'&&/^(o|ho)/i.test(norm(last))) c='u';
+  return a.slice(0,-1).join(', ')+' '+c+' '+last; }
+const cap1=s=>s?s.charAt(0).toUpperCase()+s.slice(1):s;
+const low1=s=>s&&!/^[A-ZÁÉÍÓÚÑ]{2}/.test(s)?s.charAt(0).toLowerCase()+s.slice(1):s;
+const PRODTXT={regular:'gasolina regular',premium:'gasolina premium',diesel:'diésel',gaslp:'gas LP',gasnat:'gas natural',otro:'otro producto'};
+const INSTTXT={cuartoElectrico:'cuarto eléctrico',oficina:'oficina',residuos:'cuarto de residuos peligrosos',sanitarios:'sanitarios',cuartoMaquinas:'cuarto de máquinas',plantaEmergencia:'planta de emergencia',bodega:'bodega de lubricantes'};
+// [singular, plural, femenino] para lo que se cuenta; [texto] para lo que no se cuenta
+const SEGTXT={paroEmergencia:['paro de emergencia','paros de emergencia'],extintores:['extintor','extintores'],tierraFisica:['sistema de tierras físicas'],pararrayos:['pararrayos','pararrayos'],
+  pozosMonitoreo:['pozo de monitoreo','pozos de monitoreo'],pozosObservacion:['pozo de observación','pozos de observación'],trampa:['trampa de combustibles','trampas de combustibles',1],
+  bocatoma:['bocatoma de llenado','bocatomas de llenado',1],recuperacion:['sistema de recuperación de vapores'],techumbre:['techumbre en la zona de despacho'],
+  volumetrico:['sistema de control volumétrico'],senalizacion:['señalización y ruta de evacuación']};
+const SEGART={tierraFisica:'un ',recuperacion:'un ',volumetrico:'un '};
+
+/* ---------- Descripción ejecutiva (se escribe sola con lo capturado) ---------- */
+function genDesc(r){
+  const g=r.general||{}, t=totals(r), P1=[], P2=[];
+  // Identificación y ubicación
+  const razon=String(g.razonSocial||'').split('/').map(x=>x.trim()).filter(Boolean);
+  const ubic=[g.direccion,g.municipio,g.estado].map(x=>String(x||'').trim()).filter(Boolean).join(', ');
+  const ant=antiguedad(g.inicioOperacion);
+  const pred=[];
+  if(ubic) pred.push('se ubica en '+ubic);
+  if(ant!=null){ const f=parseFecha(g.inicioOperacion); pred.push('opera desde '+(f.m?'el ':'')+fechaLarga(g.inicioOperacion)+', con una antigüedad de '+antTxt(ant)); }
+  const nom=String(g.nombre||'').trim();
+  let s1=(!nom?'La estación de autoconsumo':/autoconsumo|^estaci[oó]n/i.test(nom)?'La estación '+nom:'La estación de autoconsumo '+nom)+(razon.length?', a cargo de '+lista(razon)+',':'');
+  s1+=' '+(pred.length?lista(pred):'forma parte del presente levantamiento')+'.';
+  P1.push(s1);
+  if(String(g.permiso||'').trim()) P1.push('Cuenta con el permiso '+String(g.permiso).trim()+'.');
+  if(String(g.uso||'').trim()) P1.push('El combustible se destina a '+low1(String(g.uso).trim()).replace(/\.$/,'')+'.');
+  const p=r.predio||{};
+  if(Number(p.superficie)>0) P1.push('El predio tiene una superficie de '+fmt(p.superficie)+' m²'+(Number(p.frente)>0&&Number(p.fondo)>0?' ('+fmt(p.frente)+' m de frente por '+fmt(p.fondo)+' m de fondo)':'')+'.');
+  else if(Number(p.frente)>0&&Number(p.fondo)>0) P1.push('El predio mide '+fmt(p.frente)+' m de frente por '+fmt(p.fondo)+' m de fondo.');
+  // Tanques
+  const tq=getP(r,'tanques.lista')||[];
+  if(tq.length){
+    const tipos=[...new Set(tq.map(x=>x.tipo).filter(Boolean))];
+    const adj=tipos.length===1&&tq.every(x=>x.tipo)?(tipos[0]==='subterraneo'?'subterráneo':'superficial'):'';
+    const grupos={}; tq.forEach(x=>{ const k=x.producto||'sin'; (grupos[k]=grupos[k]||{n:0,c:0}); grupos[k].n++; grupos[k].c+=Number(x.capacidad)||0; });
+    const ks=Object.keys(grupos).filter(k=>k!=='sin');
+    let s;
+    if(tq.length===1){ const x=tq[0];
+      s='Dispone de un tanque de almacenamiento'+(adj?' '+adj:'')+(x.producto?' de '+PRODTXT[x.producto]:'')+(Number(x.capacidad)>0?' con capacidad de '+fmt(x.capacidad)+' litros':'');
+    }else{
+      s='Dispone de '+cnt(tq.length,'tanque','tanques')+' de almacenamiento'+(adj?' '+adj+'s':'')+(ks.length===1&&!grupos.sin?' de '+PRODTXT[ks[0]]:'')+(t.capacidad>0?', con una capacidad total de '+fmt(t.capacidad)+' litros':'');
+      if(ks.length>1) s+=': '+lista(ks.map(k=>num(grupos[k].n,0,1)+' de '+PRODTXT[k]+(grupos[k].c>0?' ('+fmt(grupos[k].c)+' L)':'')));
+      if(!adj&&tipos.length>1){ const sub=tq.filter(x=>x.tipo==='subterraneo').length, sup=tq.filter(x=>x.tipo==='superficial').length;
+        s+='; de ellos, '+lista([sub?num(sub,0,1)+(sub===1?' es subterráneo':' son subterráneos'):'',sup?num(sup,0,1)+(sup===1?' es superficial':' son superficiales'):''].filter(Boolean)); }
+    }
+    P1.push(s+'.');
+  }
+  const con=getP(r,'tanques.consola');
+  if(con==='si'){ const mm=[getP(r,'tanques.consolaMarca'),getP(r,'tanques.consolaModelo')].map(x=>String(x||'').trim()).filter(Boolean).join(' ');
+    const est=String(getP(r,'tanques.consolaEstado')||'').trim();
+    P1.push('Cuenta con consola de medición'+(mm?' '+mm:'')+(est?', cuyo estado se reportó como '+low1(est).replace(/\.$/,''):'')+'.'); }
+  else if(con==='no') P1.push('No cuenta con consola de medición.');
+  // Despacho
+  const ds=getP(r,'despacho.dispensarios')||[]; const islas=Number(getP(r,'despacho.islas'))||0;
+  if(ds.length){
+    const gp=new Set(); ds.forEach(x=>(x.productos||[]).forEach(k=>gp.add(k)));
+    const gasTxt=gp.has('gaslp')&&gp.has('gasnat')?'gas LP y gas natural':gp.has('gasnat')?'gas natural':'gas LP';
+    const parts=[t.mangGas?num(t.mangGas,1,0)==='una'?'una de gasolina':num(t.mangGas,1)+' de gasolina':'',t.mangDie?num(t.mangDie,1)+' de diésel':'',t.mangOtro?num(t.mangOtro,1)+' de '+gasTxt:''].filter(Boolean);
+    let s='La zona de despacho cuenta con '+(islas?cnt(islas,'isla','islas',1)+' y ':'')+cnt(ds.length,'dispensario','dispensarios');
+    if(t.mangueras){ s+=parts.length===1?', con '+cnt(t.mangueras,'manguera','mangueras',1)+' '+parts[0].replace(/^\S+\s/,''):', con un total de '+cnt(t.mangueras,'manguera','mangueras',1)+': '+lista(parts); }
+    P1.push(s+'.');
+    if(t.master||t.satelite){ const d=[t.master?num(t.master,0,1)+(t.master===1?' es Master':' son Master'):'',t.satelite?num(t.satelite,0,1)+(t.satelite===1?' es Satélite':' son Satélite'):''].filter(Boolean);
+      P1.push('De los dispensarios de diésel, '+lista(d)+'.'); }
+  }
+  // Instalaciones
+  const si=INST.filter(([k])=>getP(r,'instalaciones.'+k+'.existe')==='si').map(([k])=>INSTTXT[k]);
+  const no=INST.filter(([k])=>getP(r,'instalaciones.'+k+'.existe')==='no').map(([k])=>INSTTXT[k]);
+  if(si.length) P2.push('Sus instalaciones incluyen '+lista(si)+'.');
+  if(no.length) P2.push('No cuenta con '+lista(no,'ni')+'.');
+  // Seguridad
+  const sgSi=[], sgNo=[];
+  SEG.forEach(([k])=>{ const v=getP(r,'seguridad.'+k), tx=SEGTXT[k];
+    if(v==='si'){ const n=Number(getP(r,'seguridadDet.'+k+'.cantidad'))||0; sgSi.push(tx.length>1&&n>0?cnt(n,tx[0],tx[1],tx[2]):tx.length>1?tx[1]:(SEGART[k]||'')+tx[0]); }
+    else if(v==='no') sgNo.push(tx[tx.length>1?1:0]); });
+  if(sgSi.length) P2.push('En materia de seguridad, el sitio cuenta con '+lista(sgSi)+'.');
+  if(sgNo.length) P2.push('No se identificaron en sitio: '+lista(sgNo)+'.');
+  // Cierre
+  if(g.fecha){ const c=String(g.cuadrilla||'').trim(), rp=String(g.responsable||'').trim();
+    P2.push('El levantamiento se realizó el '+fechaLarga(g.fecha)+(c?' por la '+(/^cuadrilla/i.test(c)?c:'cuadrilla '+c):'')+(rp?', bajo la responsabilidad de '+rp:'')+'.'); }
+  return [P1.join(' '),P2.join(' ')].filter(Boolean).join('\n\n');
+}
+// Si nadie la editó a mano, siempre se usa la versión recién escrita (así la antigüedad y los datos salen al día).
+function descOf(r){ return r.descManual&&String(r.descripcion||'').trim()?r.descripcion:genDesc(r); }
+function autoDesc(){
+  if(!S.rec||S.rec.descManual) return;
+  S.rec.descripcion=genDesc(S.rec);
+  const el=document.getElementById('descripcion'); if(el&&document.activeElement!==el) el.value=S.rec.descripcion;
+}
+
 /* ---------- Estado ---------- */
-const S = { sb:null, configured:false, uid:deviceId(), canWrite:true,
+const S = { sb:null, configured:false, uid:null, email:'', admin:false, authed:false, chan:null,
   docs:new Map(), rec:null, tab:'captura', saving:false, again:false, timer:null, uploads:{}, dbReady:false, dbError:false, lastSaved:null, saveErr:null, readOnly:false, showCheck:false, started:false };
 
+/* ---------- Permisos ----------
+   Todos los usuarios con cuenta en Supabase pueden entrar, capturar y ver el concentrado.
+   Cada quien puede editar solo los levantamientos que creó.
+   Los administradores (tabla levantamientos_admins en Supabase) pueden editar y borrar cualquiera.
+   La seguridad real la ponen las políticas RLS de Supabase (archivo levantamientos-acceso.sql); esto solo acomoda los botones. */
+function canEdit(d){ return !!(S.sb&&S.authed&&d&&(S.admin||d.creadoPor===S.uid)); }
+function canDelete(){ return !!(S.sb&&S.authed&&S.admin); }
 function mkFolio(){ const d=today().replace(/-/g,'').slice(2); return 'LT-'+d+'-'+Math.random().toString(36).slice(2,6).toUpperCase(); }
 function blank(){ return { folio:mkFolio(), estatus:'borrador', creadoPor:S.uid, creadoEn:new Date().toISOString(), llenadoPor:lsGet('lt.nombre')||'',
   general:{fecha:today()}, predio:{}, instalaciones:{}, seguridad:{}, tanques:{lista:[]}, despacho:{dispensarios:[]}, observaciones:'', fotosGenerales:[] }; }
@@ -326,6 +463,7 @@ function validate(r){
   const req=[], adv=[]; const g=r.general||{};
   [['nombre','Nombre de la estación'],['municipio','Municipio'],['estado','Estado'],['fecha','Fecha'],['cuadrilla','Cuadrilla'],['responsable','Responsable del levantamiento']].forEach(([k,l])=>{ if(!String(g[k]||'').trim()) req.push(l); });
   if(!String(g.coordenadas||'').trim()) adv.push('Coordenadas GPS');
+  if(!parseFecha(g.inicioOperacion)) adv.push('Inicio de operaciones (para calcular la antigüedad)');
   if(!(r.fotosGenerales||[]).length) adv.push('Foto de vista general / fachada');
   INST.forEach(([k,l,main])=>{ const x=getP(r,'instalaciones.'+k)||{}; if(main&&!x.existe) req.push(l+': indicar si cuenta'); if(x.existe==='si'&&!(x.fotos||[]).length) adv.push(l+': falta foto de evidencia'); });
   const tq=(r.tanques&&r.tanques.lista)||[];
@@ -396,7 +534,7 @@ function applyArca(id){
   const a=ARCA.find(x=>x[0]===id); if(!a) return;
   const g=S.rec.general||(S.rec.general={});
   if(g.arcaId===a[0]&&g.nombre==='ARCA '+a[1]) return;
-  Object.assign(g,{ arcaId:a[0], region:a[2], nombre:'ARCA '+a[1], razonSocial:arcaRazon(a[6]), razonManual:false, permiso:a[4], estado:a[3], direccion:a[5], combustibles:a[6].slice() });
+  Object.assign(g,{ arcaId:a[0], region:a[2], nombre:'ARCA '+a[1], razonSocial:arcaRazon(a[6]), razonManual:false, permiso:a[4], estado:a[3], direccion:a[5], combustibles:a[6].slice(), inicioOperacion:a[7]||g.inicioOperacion||'' });
   touched(); renderCaptura(); toast('Datos de '+a[1]+' cargados. Falta el municipio.');
 }
 function resizeSeg(k){
@@ -426,7 +564,7 @@ function renderCaptura(){
     <div><small>Dispensarios</small><b>${t.disp}</b></div>
     <div><small>Mangueras</small><b id="sm-mang">${t.mangueras}</b></div>
     <div><small>Fotos</small><b>${t.fotos}</b></div></div>`;
-  if(S.readOnly) h+=`<div class="banner">Estás viendo este levantamiento en modo lectura.</div>`;
+  if(S.readOnly) h+=`<div class="banner">Estás viendo este levantamiento en modo lectura. Solo quien lo creó o un administrador puede modificarlo.</div>`;
 
   h+=sec('01','Datos generales','gen',{t:g.nombre?'Con datos':'Pendiente',ok:!!g.nombre},`
     ${arcaPicker()}
@@ -434,6 +572,7 @@ function renderCaptura(){
       ${field('Nombre de la estación / empresa','general.nombre',{req:1,full:1,ph:'Ej. Autoconsumo Transportes del Bajío'})}
       ${field('Razón social','general.razonSocial',{help:g.arcaId?'Se pone sola: gasolina o diésel = Distribuidora Arca Comercial; gas LP o gas natural = Bebidas Mundiales.':''})}
       ${field('No. de permiso CRE / autoconsumo','general.permiso',{ph:'Si ya cuenta con él'})}
+      ${field('Inicio de operaciones (según permiso)','general.inicioOperacion',{type:'date',help:antiguedad(g.inicioOperacion)!=null?'Antigüedad hoy: <b>'+antTxt(antiguedad(g.inicioOperacion))+'</b>. Se recalcula sola cada año.':'Fecha en que empezó a operar la estación. Con ella se calcula la antigüedad, que se actualiza sola cada año.'})}
       ${field('Domicilio','general.direccion',{full:1,ph:'Calle, número, colonia, C.P.'})}
       ${field('Municipio','general.municipio',{req:1})}
       ${field('Estado','general.estado',{req:1})}
@@ -511,7 +650,13 @@ function renderCaptura(){
 
   h+=sec('07','Observaciones','obs',null,`${field('Observaciones generales','observaciones',{area:1,full:1,ph:'Hallazgos, pendientes, riesgos, acuerdos con el cliente…'})}`,isOpen('obs',false));
 
-  h+=sec('08','Quién llenó el formulario','fir',{t:String(r.llenadoPor||'').trim()?'Listo':'Pendiente',ok:!!String(r.llenadoPor||'').trim()},`
+  if(!r.descManual) r.descripcion=genDesc(r);
+  h+=sec('08','Descripción ejecutiva','dex',{t:r.descManual?'Editada a mano':'Se escribe sola',ok:true},`
+    <p class="hint">Este texto se escribe solo con lo que vas capturando y sale en el PDF, en la sección Resumen. Si lo corriges a mano, deja de cambiar solo.</p>
+    ${field('Descripción para el reporte','descripcion',{area:1,full:1})}
+    ${r.descManual&&!S.readOnly?`<div class="descbar"><button type="button" class="btn sm" data-act="regen">Volver al texto automático</button><small class="hint">Se pierde lo que corregiste a mano.</small></div>`:''}`,isOpen('dex',false));
+
+  h+=sec('09','Quién llenó el formulario','fir',{t:String(r.llenadoPor||'').trim()?'Listo':'Pendiente',ok:!!String(r.llenadoPor||'').trim()},`
     <div class="firma">${field('Nombre completo de quien llenó el formulario','llenadoPor',{req:1,full:1,ph:'Nombre, segundo nombre, apellidos',help:'Este nombre sale al final del PDF. En este teléfono se recuerda para la próxima vez.'})}</div>`,isOpen('fir',true));
 
   if(S.showCheck){ h+=`<div class="check" id="checkbox"><h3>${v.req.length?'Falta información':'Listo para cerrar'}</h3>
@@ -523,6 +668,7 @@ function renderCaptura(){
     <button type="button" class="btn pri" data-act="pdf">Descargar PDF</button>
     <button type="button" class="btn" data-act="xlsone">Excel</button>
     ${S.readOnly?'':`<button type="button" class="btn" data-act="new">+ Nuevo</button>`}
+    ${canDelete()&&S.docs.has(r.folio)?`<button type="button" class="btn ghost danger" data-rm="${esc(r.folio)}">Borrar</button>`:''}
     <button type="button" class="btn" data-act="close">Cerrar</button>
   </div>`;
   const ae=document.activeElement, fid=ae&&ae.id&&el.contains(ae)&&ae.matches('input,textarea')?ae.id:null; let sel=null; try{ sel=fid?ae.selectionStart:null; }catch(e){}
@@ -562,7 +708,7 @@ function renderConcentrado(){
   const T=rows.reduce((a,d)=>{ const t=totals(d); a.tq+=t.tanques; a.cap+=t.capacidad; a.ds+=t.disp; a.m+=t.mangueras; a.f+=t.fotos; a.ok+=d.estatus==='completo'?1:0; return a; },{tq:0,cap:0,ds:0,m:0,f:0,ok:0});
   const focus=document.activeElement&&document.activeElement.id; const selS=focus==='fq'?[document.activeElement.selectionStart]:null;
   const pill=d=>`<span class="pill ${d.estatus==='completo'?'ok':'draft'}">${d.estatus==='completo'?'Completo':'Borrador'}</span>`;
-  const acts=d=>{ const canDel=S.sb&&d.creadoPor===S.uid; return `<div class="rowact"><button type="button" class="btn sm" data-pdf="${esc(d.folio)}">PDF</button>${canDel?`<button type="button" class="btn sm ghost danger" data-rm="${esc(d.folio)}">Borrar</button>`:''}</div>`; };
+  const acts=d=>{ const canDel=canDelete(); return `<div class="rowact"><button type="button" class="btn sm" data-pdf="${esc(d.folio)}">PDF</button>${canDel?`<button type="button" class="btn sm ghost danger" data-rm="${esc(d.folio)}">Borrar</button>`:''}</div>`; };
   el.innerHTML=`
   <div class="summary">
     <div><small>Levantamientos</small><b>${rows.length}</b></div>
@@ -606,6 +752,7 @@ function renderConcentrado(){
 function renderStatus(){
   const c=$('#conn');
   if(!S.configured) c.innerHTML='<span class="dot bad"></span>Falta configurar Supabase · se guarda en este dispositivo';
+  else if(!S.authed) c.innerHTML='<span class="dot warn"></span>Sin sesión iniciada';
   else if(!S.dbReady) c.innerHTML='<span class="dot warn"></span>Sin conexión al concentrado · se guarda en este dispositivo';
   else c.innerHTML='<span class="dot ok"></span>Conectado · '+S.docs.size+' levantamiento'+(S.docs.size===1?'':'s');
   const s=$('#savest');
@@ -616,6 +763,7 @@ function renderStatus(){
   else s.textContent='';
 }
 function setTab(t){
+  if(!S.authed) return;
   S.tab=t; ['captura','concentrado'].forEach(x=>{ $('#view-'+x).hidden=x!==t; $('#tab-'+x).setAttribute('aria-selected',String(x===t)); });
   if(t==='concentrado') renderConcentrado(); else renderCaptura();
   try{ history.replaceState(null,'',t==='concentrado'?'#concentrado':'#captura'); }catch(e){}
@@ -623,11 +771,13 @@ function setTab(t){
 }
 
 /* ---------- Guardado (Supabase) ---------- */
-function touched(){ if(!S.rec||S.readOnly) return; autoRazon(); S.rec.actualizadoEn=new Date().toISOString(); putDraft(S.rec); clearTimeout(S.timer); S.timer=setTimeout(()=>{ S.timer=null; save(); },1500); renderStatus(); }
+function touched(){ if(!S.rec||S.readOnly) return; autoRazon(); autoDesc(); S.rec.actualizadoEn=new Date().toISOString(); putDraft(S.rec); clearTimeout(S.timer); S.timer=setTimeout(()=>{ S.timer=null; save(); },1500); renderStatus(); }
 async function save(){
   if(!S.sb||!S.rec||S.readOnly){ renderStatus(); return; }
   if(S.saving){ S.again=true; return; }
   S.saving=true; renderStatus();
+  if(!S.authed){ renderStatus(); return; }
+  if(!S.docs.has(S.rec.folio)&&S.rec.creadoPor!==S.uid) S.rec.creadoPor=S.uid;
   const snap=JSON.parse(JSON.stringify(S.rec)); if(!snap.creadoPor){ snap.creadoPor=S.uid; S.rec.creadoPor=S.uid; }
   snap.actualizadoPor=S.uid;
   try{
@@ -636,17 +786,19 @@ async function save(){
     S.docs.set(snap.folio,snap); dropDraft(snap.folio,snap.actualizadoEn); S.lastSaved=new Date(); S.saveErr=null;
   }catch(e){
     const perm=e&&(e.code==='42501'||/row-level security|permission/i.test(e.message||''));
-    S.saveErr=perm?'Sin permiso para guardar en el concentrado':'No se pudo guardar; se reintentará';
+    S.saveErr=perm?'No tienes permiso para modificar este levantamiento':'No se pudo guardar; se reintentará';
     if(!perm) setTimeout(()=>touched(),8000);
   }
   S.saving=false; if(S.again){ S.again=false; save(); } renderStatus();
 }
 async function syncDrafts(){
-  if(!S.sb) return; const d=drafts(); let n=0;
+  if(!S.sb||!S.authed) return; const d=drafts(); let n=0;
   for(const f of Object.keys(d)){
     const r=d[f]; if(!r||!r.folio) continue;
     if(S.rec&&S.rec.folio===f) continue;
     const cur=S.docs.get(f); if(cur&&String(cur.actualizadoEn||'')>=String(r.actualizadoEn||'')){ dropDraft(f); continue; }
+    if(cur&&!canEdit(cur)) continue;
+    if(!cur&&r.creadoPor!==S.uid) r.creadoPor=S.uid;
     try{ const {error}=await S.sb.from(TABLA).upsert({ folio:r.folio, data:r, estatus:r.estatus, creado_por:r.creadoPor||S.uid, actualizado_en:r.actualizadoEn||new Date().toISOString() }); if(error) throw error; S.docs.set(f,r); dropDraft(f,r.actualizadoEn); n++; }catch(e){}
   }
   if(n) toast(n===1?'Se subió 1 levantamiento que estaba guardado en este dispositivo.':'Se subieron '+n+' levantamientos que estaban guardados en este dispositivo.',4000);
@@ -654,7 +806,7 @@ async function syncDrafts(){
 function openRec(folio){
   const d=S.docs.get(folio); if(!d) return;
   S.rec=JSON.parse(JSON.stringify(d)); S.showCheck=false;
-  S.readOnly = !S.sb;
+  S.readOnly = !canEdit(d);
   S.lastSaved=null; S.saveErr=null; setTab('captura');
 }
 
@@ -736,7 +888,7 @@ async function buildPdf(r){
   const {jsPDF}=window.jspdf; const doc=new jsPDF({unit:'mm',format:'letter'});
   const W=doc.internal.pageSize.getWidth(), H=doc.internal.pageSize.getHeight(), M=14; let y=32;
   const g=r.general||{}, t=totals(r);
-  pdfHeader(doc,'Levantamiento topográfico · Autoconsumo','Folio '+r.folio+'   ·   '+(r.estatus==='completo'?'Completo':'Borrador')+'   ·   Fecha '+(g.fecha||'—'));
+  pdfHeader(doc,'Memoria técnica','Folio '+r.folio+'   ·   '+(r.estatus==='completo'?'Completo':'Borrador')+'   ·   Fecha '+(g.fecha||'—'));
   const space=h=>{ if(y+h>H-16){ doc.addPage(); y=18; } };
   const title=s=>{ space(14); doc.setFont('helvetica','bold'); doc.setFontSize(11.5); doc.setTextColor(...BRAND); doc.text(s.toUpperCase(),M,y); doc.setDrawColor(...SIGNAL); doc.setLineWidth(.6); doc.line(M,y+1.6,M+30,y+1.6); doc.setTextColor(...INK); y+=5; };
   const tbl=(o)=>{ doc.autoTable(Object.assign({startY:y,margin:{left:M,right:M},theme:'grid',styles:{fontSize:8.8,cellPadding:1.8,lineColor:LINE,lineWidth:.2,textColor:INK},headStyles:{fillColor:BRAND,textColor:255,fontStyle:'bold'},alternateRowStyles:{fillColor:ZEBRA}},o)); y=doc.lastAutoTable.finalY+7; };
@@ -744,8 +896,10 @@ async function buildPdf(r){
   const sn=v=>v==='si'?'Sí':v==='no'?'No':'—';
 
   title('Datos generales');
-  kv([['Estación / empresa',g.nombre],['ID ARCA / región',g.arcaId?g.arcaId+' · '+(g.region||''):''],['Combustibles del sitio',(g.combustibles||[]).map(k=>COMB[k]).join(', ')],['Razón social',g.razonSocial],['Permiso CRE / autoconsumo',g.permiso],['Domicilio',g.direccion],['Municipio, estado',[g.municipio,g.estado].filter(Boolean).join(', ')],['Coordenadas GPS',g.coordenadas],['Uso del autoconsumo',g.uso],['Cuadrilla',g.cuadrilla],['Responsable del levantamiento',g.responsable],['Llenó el formulario',r.llenadoPor],['Contacto en sitio',[g.contacto,g.telefono].filter(Boolean).join(' · ')]]);
+  kv([['Estación / empresa',g.nombre],['ID ARCA / región',g.arcaId?g.arcaId+' · '+(g.region||''):''],['Combustibles del sitio',(g.combustibles||[]).map(k=>COMB[k]).join(', ')],['Razón social',g.razonSocial],['Permiso CRE / autoconsumo',g.permiso],['Inicio de operaciones',fechaLarga(g.inicioOperacion)],['Antigüedad',antiguedad(g.inicioOperacion)!=null?antTxt(antiguedad(g.inicioOperacion))+' (al '+fechaLarga(today())+')':''],['Domicilio',g.direccion],['Municipio, estado',[g.municipio,g.estado].filter(Boolean).join(', ')],['Coordenadas GPS',g.coordenadas],['Uso del autoconsumo',g.uso],['Cuadrilla',g.cuadrilla],['Responsable del levantamiento',g.responsable],['Llenó el formulario',r.llenadoPor],['Contacto en sitio',[g.contacto,g.telefono].filter(Boolean).join(' · ')]]);
   title('Resumen');
+  { const txt=descOf(r); if(txt){ doc.setFont('helvetica','normal'); doc.setFontSize(9.8); doc.setTextColor(...INK);
+      doc.splitTextToSize(txt,W-2*M).forEach(l=>{ space(5.2); if(l) doc.text(l,M,y); y+=l?4.9:2.5; }); y+=3; } }
   tbl({head:[['Tanques','Capacidad total','Consola','Dispensarios','Master / Satélite','Mang. gasolina','Mang. diésel','Mang. gas LP / nat.','Fotos']],body:[[t.tanques,fmt(t.capacidad)+' L',sn(getP(r,'tanques.consola')),t.disp,t.master+' / '+t.satelite,t.mangGas,t.mangDie,t.mangOtro,t.fotos]],styles:{fontSize:8.8,halign:'center'}});
   const p=r.predio||{};
   if(p.frente||p.fondo||p.superficie||p.accesos||p.colindancias){ title('Predio'); kv([['Frente × fondo',(p.frente||'—')+' m × '+(p.fondo||'—')+' m'],['Superficie',p.superficie?fmt(p.superficie)+' m²':''],['Accesos',p.accesos],['Colindancias',p.colindancias]]); }
@@ -802,7 +956,7 @@ async function pdfAll(){
   if(!needLib()) return; const rows=rowsFiltered(); overlay(true,'Generando concentrado…','');
   try{
     const {jsPDF}=window.jspdf; const doc=new jsPDF({unit:'mm',format:'letter',orientation:'landscape'});
-    pdfHeader(doc,'Concentrado de levantamientos · Autoconsumo',rows.length+' levantamientos'+(F.cuadrilla?' · '+F.cuadrilla:'')+(F.estatus?' · '+(F.estatus==='completo'?'Completos':'Borradores'):'')+' · '+new Date().toLocaleDateString('es-MX'));
+    pdfHeader(doc,'Memoria técnica · Concentrado',rows.length+' levantamientos'+(F.cuadrilla?' · '+F.cuadrilla:'')+(F.estatus?' · '+(F.estatus==='completo'?'Completos':'Borradores'):'')+' · '+new Date().toLocaleDateString('es-MX'));
     const T={tq:0,cap:0,ds:0,ma:0,sa:0,m:0};
     const body=rows.map(d=>{ const g=d.general||{}, t=totals(d), ins=d.instalaciones||{}; T.tq+=t.tanques;T.cap+=t.capacidad;T.ds+=t.disp;T.ma+=t.master;T.sa+=t.satelite;T.m+=t.mangueras;
       const s=v=>v==='si'?'Sí':v==='no'?'No':'—';
@@ -820,14 +974,14 @@ function excelFor(rows,name){
   if(!rows||!rows.length){ toast('No hay levantamientos para exportar.'); return; }
   const sn=v=>v==='si'?'Sí':v==='no'?'No':'';
   const gen=rows.map(d=>{ const g=d.general||{}, t=totals(d); const o={
-    'Folio':d.folio,'Estatus':d.estatus==='completo'?'Completo':'Borrador','ID ARCA':g.arcaId||'','Región':g.region||'','Estación':g.nombre||'','Razón social':g.razonSocial||'','Permiso':g.permiso||'',
+    'Folio':d.folio,'Estatus':d.estatus==='completo'?'Completo':'Borrador','ID ARCA':g.arcaId||'','Región':g.region||'','Estación':g.nombre||'','Razón social':g.razonSocial||'','Permiso':g.permiso||'','Inicio de operaciones':g.inicioOperacion||'','Antigüedad (años)':antiguedad(g.inicioOperacion)??'',
     'Domicilio':g.direccion||'','Municipio':g.municipio||'','Estado':g.estado||'','Coordenadas':g.coordenadas||'','Fecha':g.fecha||'','Cuadrilla':g.cuadrilla||'','Responsable':g.responsable||'','Llenó el formulario':d.llenadoPor||'',
     'Contacto':[g.contacto,g.telefono].filter(Boolean).join(' · '),'Uso':g.uso||'' };
     INST.forEach(([k,l])=>o[l]=sn(getP(d,'instalaciones.'+k+'.existe')));
     Object.assign(o,{'Consola':sn(getP(d,'tanques.consola')),'Tanques':t.tanques,'Capacidad total (L)':t.capacidad,'Cap. Regular (L)':t.porProd.regular||0,'Cap. Premium (L)':t.porProd.premium||0,'Cap. Diésel (L)':t.porProd.diesel||0,'Cap. Gas LP (L)':t.porProd.gaslp||0,'Cap. Gas natural (L)':t.porProd.gasnat||0,
       'Dispensarios':t.disp,'Diésel Master':t.master,'Diésel Satélite':t.satelite,'Mangueras gasolina':t.mangGas,'Mangueras diésel':t.mangDie,'Mangueras gas LP / natural':t.mangOtro,'Mangueras total':t.mangueras});
     SEG.forEach(([k,l])=>{ const v=sn(getP(d,'seguridad.'+k)); o[l]=v==='Sí'?'Sí ('+(getP(d,'seguridadDet.'+k+'.cantidad')||segItems(d,k).length)+')':v; });
-    o['Fotos']=t.fotos; o['Observaciones']=d.observaciones||''; return o; });
+    o['Fotos']=t.fotos; o['Observaciones']=d.observaciones||''; o['Descripción ejecutiva']=descOf(d); return o; });
   const tq=[], ds=[], sg=[], ft=[];
   rows.forEach(d=>{ const g=d.general||{};
     (getP(d,'tanques.lista')||[]).forEach((x,i)=>tq.push({'Folio':d.folio,'Estación':g.nombre||'','No.':i+1,'Producto':LBL[x.producto]||'','Capacidad (L)':Number(x.capacidad)||0,'Tipo':LBL[x.tipo]||'','Pared':LBL[x.pared]||'','Marca':x.marca||'','Observaciones':x.notas||'','Fotos':(x.fotos||[]).length}));
@@ -863,7 +1017,12 @@ document.addEventListener('click',async e=>{
   if(b.dataset.delph){ const a=getP(S.rec,b.dataset.delph)||[]; a.splice(Number(b.dataset.i),1); touched(); refreshPhotos(b.dataset.delph); return; }
   if(b.dataset.pdf){ e.stopPropagation(); const d=S.docs.get(b.dataset.pdf); if(d) pdfFor(d); return; }
   if(b.dataset.rm){ e.stopPropagation(); if(!armed(b)) return;
-    try{ const {error}=await S.sb.from(TABLA).delete().eq('folio',b.dataset.rm); if(error) throw error; S.docs.delete(b.dataset.rm); renderConcentrado(); renderStatus(); toast('Levantamiento borrado'); }
+    if(!canDelete()){ toast('Solo un administrador puede borrar levantamientos.'); return; }
+    const f=b.dataset.rm;
+    try{ const {data,error}=await S.sb.from(TABLA).delete().eq('folio',f).select('folio'); if(error) throw error;
+      if(!data||!data.length){ toast('No se borró: tu usuario no tiene permiso de administrador en Supabase.',4500); return; }
+      S.docs.delete(f); dropDraft(f); if(S.rec&&S.rec.folio===f){ S.rec=null; S.readOnly=false; }
+      if(S.tab==='concentrado') renderConcentrado(); else renderCaptura(); renderStatus(); toast('Levantamiento borrado'); }
     catch(err){ toast('No se pudo borrar.'); } return; }
   if(b.dataset.open){ openRec(b.dataset.open); return; }
   if(b.dataset.local){ const r=drafts()[b.dataset.local]; if(r){ S.rec=r; S.readOnly=false; S.showCheck=false; S.lastSaved=null; S.saveErr=null; setTab('captura'); touched(); } return; }
@@ -875,6 +1034,8 @@ document.addEventListener('click',async e=>{
   else if(a==='complete'){ const v=validate(S.rec); S.showCheck=true;
     if(!v.req.length){ S.rec.estatus='completo'; touched(); toast('Marcado como completo. Ya puedes descargar el PDF.'); } else if(S.rec.estatus==='completo'){ S.rec.estatus='borrador'; touched(); }
     renderCaptura(); const c=$('#checkbox'); if(c) c.scrollIntoView({behavior:'smooth',block:'center'}); }
+  else if(a==='logout'){ logout(); }
+  else if(a==='regen'){ S.rec.descManual=false; touched(); renderCaptura(); toast('Se volvió al texto automático.'); }
   else if(a==='pdfall'){ pdfAll(); }
   else if(a==='xlsx'){ excelFor(rowsFiltered(),'Concentrado_levantamientos_'+today()+'.xlsx'); }
 });
@@ -883,6 +1044,7 @@ document.addEventListener('input',e=>{
   if(el.dataset&&el.dataset.p&&S.rec&&!S.readOnly){ let v=el.value; if(el.type==='number') v=v===''?'':Number(v); setP(S.rec,el.dataset.p,v);
     if(el.dataset.p==='general.razonSocial') S.rec.general.razonManual=String(v).trim()!=='';
     if(el.dataset.p==='llenadoPor') lsSet('lt.nombre',String(v).trim()||null);
+    if(el.dataset.p==='descripcion') S.rec.descManual=String(v).trim()!=='';
     touched();
     if(/numero$/.test(el.dataset.p)){ const h=el.closest('.item'); if(h) h.querySelector('.item-h b').textContent='Dispensario '+(el.value||''); } }
   if(el.id==='fq'){ F.q=el.value; renderConcentrado(); }
@@ -895,6 +1057,7 @@ document.addEventListener('change',e=>{
   if(el.id==='fc'){ F.cuadrilla=el.value; renderConcentrado(); }
   if(el.id==='fe'){ F.estatus=el.value; renderConcentrado(); }
   if(el.dataset&&el.dataset.p&&S.rec&&/mang|capacidad/.test(el.dataset.p)) updSummary();
+  if(el.dataset&&el.dataset.p==='general.inicioOperacion'&&S.rec) renderCaptura();
 });
 
 document.addEventListener('focusin',e=>{
@@ -917,33 +1080,99 @@ function banner(){
     b.innerHTML='<div class="banner bad">'+(noTabla?'Falta crear la tabla <b>levantamientos</b> en Supabase (corre el SQL).':llave?'La llave de Supabase no es válida. Revisa config-levantamientos.js.':'No hay conexión con el concentrado. Revisa tu internet.')+' Lo que captures se guarda en este dispositivo y se sube cuando vuelva la conexión.'+(m?'<br><small>Detalle: '+esc(m)+'</small>':'')+'</div>'; }
   else b.innerHTML='';
 }
-function refreshViews(){ renderStatus(); banner(); if(S.tab==='concentrado') renderConcentrado(); else if(!S.rec) renderCaptura(); }
+function refreshViews(){ renderStatus(); banner(); if(!S.authed) return; if(S.tab==='concentrado') renderConcentrado(); else if(!S.rec) renderCaptura(); }
 async function loadAll(){
   const {data,error}=await S.sb.from(TABLA).select('folio,data').order('actualizado_en',{ascending:false});
   if(error) throw error;
   S.docs=new Map((data||[]).filter(x=>x&&x.data).map(x=>[x.folio,x.data]));
   S.dbReady=true; S.dbError=false;
 }
-async function init(){
-  const img=$('#logoimg'); if(img) img.src=LOGO;
-  const old=lsGet('lt.draft'); if(old&&old.folio){ putDraft(old); lsSet('lt.draft',null); }
-  S.configured = !!(window.supabase&&window.supabase.createClient) && !/PEGA_AQUI/.test(SUPABASE_ANON_KEY);
-  if(S.configured){ S.sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{persistSession:false,autoRefreshToken:false}}); }
+/* ---------- Acceso (Supabase Auth) ---------- */
+const VERSION='21-oct-2026 · login 2';
+function renderLogin(msg,lock){
+  $('#tabs').hidden=true; $('#who').hidden=true;
+  ['captura','concentrado'].forEach(x=>$('#view-'+x).hidden=true);
+  const v=$('#view-login'); v.hidden=false;
+  const last=lsGet('lt.email')||'';
+  v.innerHTML=`<form class="login" id="loginForm" novalidate>
+    <h1>Memoria técnica</h1>
+    <p>Inicia sesión con tu correo y la contraseña de tu cuenta de Tecnocontrol.</p>
+    ${msg?`<div class="err" role="alert">${esc(msg)}</div>`:''}
+    <label class="f"><span>Correo</span><input type="email" id="lgEmail" autocomplete="username" inputmode="email" value="${esc(last)}" required></label>
+    <label class="f"><span>Contraseña</span><input type="password" id="lgPass" autocomplete="current-password" required></label>
+    <button type="submit" class="btn pri" id="lgBtn"${lock?' disabled':''}>Entrar</button>
+    <p>¿No tienes cuenta o se te olvidó la contraseña? Pídela a Sistemas.</p>
+    <p style="font-size:12px">Versión ${VERSION}</p>
+  </form>`;
+  setTimeout(()=>{ const i=$(last?'#lgPass':'#lgEmail'); if(i) i.focus(); },0);
+}
+function renderWho(){
+  const w=$('#who'); if(!S.authed){ w.hidden=true; return; }
+  w.innerHTML=`<span title="${esc(S.email)}">${esc(S.email)}</span>${S.admin?'<em>Administrador</em>':''}<button type="button" data-act="logout">Salir</button>`;
+  w.hidden=false;
+}
+async function checkAdmin(){
+  try{ const {data,error}=await Promise.race([S.sb.rpc('lt_es_admin'),new Promise(r=>setTimeout(()=>r({error:'tiempo'}),8000))]); S.admin=!error&&data===true; }catch(e){ S.admin=false; }
+}
+async function startSession(session){
+  S.authed=true; S.uid=session.user.id; S.email=session.user.email||''; lsSet('lt.email',S.email||null);
+  $('#view-login').hidden=true; $('#view-login').innerHTML=''; $('#tabs').hidden=false;
+  await checkAdmin(); renderWho();
   setTab(location.hash==='#concentrado'?'concentrado':'captura'); renderStatus(); banner();
-  S.started=true;
-  if(!S.sb){ refreshViews(); return; }
   try{ await loadAll(); await syncDrafts(); }catch(e){ S.dbReady=false; S.dbError=true; S.dbErrMsg=(e&&e.message)||''; }
   refreshViews();
+  if(S.chan) S.sb.removeChannel(S.chan);
   // Cambios en vivo de otras cuadrillas
-  S.sb.channel('levantamientos-live')
+  S.chan=S.sb.channel('levantamientos-live')
     .on('postgres_changes',{event:'*',schema:'public',table:TABLA},payload=>{
       if(payload.eventType==='DELETE'){ const f=payload.old&&payload.old.folio; if(f) S.docs.delete(f); }
       else if(payload.new&&payload.new.data){ S.docs.set(payload.new.folio,payload.new.data); }
       refreshViews();
     })
     .subscribe();
+}
+function endSession(msg){
+  if(S.chan){ try{ S.sb.removeChannel(S.chan); }catch(e){} S.chan=null; }
+  S.authed=false; S.uid=null; S.email=''; S.admin=false; S.rec=null; S.readOnly=false; S.docs=new Map(); S.dbReady=false;
+  renderStatus(); banner(); renderLogin(msg);
+}
+document.addEventListener('submit',async e=>{
+  if(e.target.id!=='loginForm') return; e.preventDefault();
+  if(!S.sb){ return; }
+  const email=$('#lgEmail').value.trim(), pass=$('#lgPass').value, btn=$('#lgBtn');
+  if(!email||!pass){ renderLogin('Escribe tu correo y tu contraseña.'); return; }
+  btn.disabled=true; btn.textContent='Entrando…';
+  let res; try{ res=await S.sb.auth.signInWithPassword({email,password:pass}); }catch(err){ res={error:err}; }
+  const error=res.error;
+  if(!error&&res.data&&res.data.session){ if(!S.authed){ try{ await startSession(res.data.session); }catch(err){ renderLogin('Entraste, pero no se pudo abrir la página: '+(err&&err.message||err)); } } return; }
+  if(error){ const m=String(error.message||'');
+    renderLogin(/invalid login/i.test(m)?'Correo o contraseña incorrectos.':/not confirmed/i.test(m)?'Tu correo todavía no está confirmado en Supabase. Pide a Sistemas que lo confirme.':/fetch|network/i.test(m)?'No hay conexión a internet. Para entrar la primera vez necesitas señal.':'No se pudo iniciar sesión: '+m);
+    lsSet('lt.email',email); }
+});
+async function logout(){
+  if(S.timer){ clearTimeout(S.timer); S.timer=null; await save(); }
+  await S.sb.auth.signOut().catch(()=>{});
+}
+
+async function init(){
+  const img=$('#logoimg'); if(img) img.src=LOGO;
+  const old=lsGet('lt.draft'); if(old&&old.folio){ putDraft(old); lsSet('lt.draft',null); }
+  S.configured = !!(window.supabase&&window.supabase.createClient) && !/PEGA_AQUI/.test(SUPABASE_ANON_KEY);
+  S.started=true;
+  if(!S.configured){ renderStatus(); banner(); renderLogin(window.supabase?'Falta la llave de Supabase (archivo config-levantamientos.js). Sin ella no se puede iniciar sesión.':'No cargó la conexión a Supabase. Revisa tu internet y recarga la página.',true); return; }
+  // La sesión se queda guardada en el teléfono: en campo sin señal se sigue capturando sin volver a entrar.
+  S.sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{persistSession:true,autoRefreshToken:true,storageKey:'lt-auth'}});
+  renderStatus(); banner(); renderLogin();
+  let session=null; try{ ({data:{session}}=await S.sb.auth.getSession()); }catch(e){}
+  if(session) await startSession(session); else renderLogin();
+  // Importante: dentro de este aviso no se puede esperar (await) otra llamada a Supabase porque se traba el login.
+  // Por eso todo se manda un instante después con setTimeout.
+  S.sb.auth.onAuthStateChange((ev,ses)=>{
+    if(ev==='SIGNED_IN'&&ses&&!S.authed) setTimeout(()=>{ if(!S.authed) startSession(ses); },0);
+    else if(ev==='SIGNED_OUT') setTimeout(()=>{ if(S.authed||!$('#loginForm')) endSession(); },0);
+  });
   // Al regresar a la app, recargar por si se perdió algún cambio
-  document.addEventListener('visibilitychange',async()=>{ if(document.visibilityState==='visible'){ try{ await loadAll(); await syncDrafts(); refreshViews(); }catch(e){} } });
+  document.addEventListener('visibilitychange',async()=>{ if(document.visibilityState==='visible'&&S.authed){ try{ await loadAll(); await syncDrafts(); refreshViews(); }catch(e){} } });
 }
 init();
 })();
